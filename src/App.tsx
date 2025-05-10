@@ -1,16 +1,17 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
 import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
+  const [result, setResult] = useState("");
   const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    const greeting = await invoke<string>("greet", { name });
-    setGreetMsg(greeting);
+    setLoading(true);
+    const res = await invoke<string>("chat_request", { name });
+    setResult(res ?? "");
+    setLoading(false);
   }
 
   return (
@@ -33,7 +34,8 @@ function App() {
         />
         <button type="submit">Greet</button>
       </form>
-      <p>{greetMsg}</p>
+
+      {loading ? <p>Loading...</p> : <p>Result: {result.length > 0 ? result : "Empty result."}</p>}
     </main>
   );
 }
