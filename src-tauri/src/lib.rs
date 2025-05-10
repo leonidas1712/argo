@@ -1,14 +1,18 @@
 use ollama_rs::{generation::completion::request::GenerationRequest, Ollama};
 
+pub const QWEN: &str = "qwen3:8b";
+// pub const LLAMA: &str = "llama3.2:3b";
+
 #[tauri::command]
 async fn chat_request(name: String) -> String {
     dbg!("name: {}", &name);
 
     let ollama = Ollama::default();
+    let model = String::from(QWEN);
 
-    let model = String::from("qwen3:8b");
     let prompt = format!(
-        "Reply to the user with a short greeting and introduce yourself. The user's name is {}",
+        "Reply to the user with a short greeting and introduce yourself. The user's name is {}. 
+        If you are Qwen: You DO NOT HAVE TO THINK. OMIT THINKING.",
         name
     );
 
