@@ -14,8 +14,11 @@ import {
   Paper,
   Group,
   Avatar,
+  Flex,
 } from "@mantine/core";
 import { IconRobot } from "@tabler/icons-react";
+
+import ColorSchemeToggle from "./components/ColorSchemeToggle";
 
 // User message component
 function UserMessage({
@@ -96,6 +99,11 @@ function App() {
 
   return (
     <Container size="sm" py="xl">
+      {/* Top bar with dark mode toggle */}
+      <Flex justify="flex-end" mb="md">
+        <ColorSchemeToggle />
+      </Flex>
+
       <Stack w="100%" mx="auto" mb="md">
         <UserMessage time="10:19:07 PM">Hi!</UserMessage>
         <AIMessage time="10:19:07 PM">How can I help you today?</AIMessage>
