@@ -3,30 +3,39 @@ use ollama_rs::{generation::completion::request::GenerationRequest, Ollama};
 // pub const QWEN: &str = "qwen3:8b";
 pub const LLAMA: &str = "llama3.2:3b";
 
+struct AppState {
+    ollama: Ollama,
+}
+
 #[tauri::command]
-async fn chat_request(name: String) -> String {
+async fn chat_request(name: String, state: tauri::State<'_, AppState>) -> Result<String, ()> {
     dbg!("name: {}", &name);
 
-    let ollama = Ollama::default();
+    let ollama = &state.ollama;
     let model = String::from(LLAMA);
 
     let prompt = format!(
-        "Reply to the user with a short greeting and introduce yourself. The user's name is {}.",
+        "Reply to the user with a short greeting and introduce yourself as Argo, a helpful AI assistant. The user's name is {}.",
         name
     );
 
     let res = ollama.generate(GenerationRequest::new(model, prompt)).await;
 
     if let Ok(gen_res) = res {
-        return gen_res.response;
+        return Ok(gen_res.response);
     }
 
-    return String::from("There was an error requesting.");
+    return Ok(String::from("There was an error requesting."));
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    let app_state = AppState {
+        ollama: Ollama::default(),
+    };
+
     tauri::Builder::default()
+        .manage(app_state)
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![chat_request])
         .run(tauri::generate_context!())
