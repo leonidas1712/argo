@@ -94,6 +94,7 @@ function App() {
               title: "Default notification",
               message: "Do not forget to star Mantine on GitHub! 🌟",
               color: "red",
+              autoClose: 2000,
             })
           }
         >
