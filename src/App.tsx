@@ -15,6 +15,7 @@ import {
   Group,
   Avatar,
 } from "@mantine/core";
+import { IconRobot } from "@tabler/icons-react";
 
 // User message component
 function UserMessage({
@@ -25,55 +26,56 @@ function UserMessage({
   time: string;
 }) {
   return (
-    <Group align="flex-end" justify="flex-end" mb="xs">
-      <Paper radius="md" p="md" bg="gray.1" style={{ maxWidth: 350 }}>
-        <Text size="sm">{children}</Text>
-      </Paper>
+    <Group align="flex-end" mb="xs" w="100%" wrap="nowrap">
       <Avatar color="gray" radius="xl" size="md">
         <span role="img" aria-label="user">
           👤
         </span>
       </Avatar>
-      <Text size="xs" c="dimmed" ml={4} style={{ alignSelf: "flex-end" }}>
-        {time}
-      </Text>
+      <Paper
+        radius="md"
+        p="md"
+        bg="gray.1"
+        style={{ flex: 1, maxWidth: "80%", marginLeft: 12 }}
+      >
+        <Text size="sm">{children}</Text>
+        <Text size="xs" c="dimmed" mt={4}>
+          {time}
+        </Text>
+      </Paper>
     </Group>
   );
 }
 
 // Argo (AI) message component
-function ArgoMessage({
+function AIMessage({
   children,
   time,
-  showWave,
 }: {
   children: React.ReactNode;
   time: string;
-  showWave?: boolean;
 }) {
   return (
-    <Group align="flex-end" mb="xs">
+    <Group align="flex-end" mb="xs" w="100%" wrap="nowrap">
       <Avatar color="yellow" radius="xl" size="md">
-        <span role="img" aria-label="Argo">
-          🤚
-        </span>
+        <IconRobot />
       </Avatar>
-      <Paper radius="md" p="md" bg="yellow.0" style={{ maxWidth: 350 }}>
+      <Paper
+        radius="md"
+        p="md"
+        bg="yellow.0"
+        style={{ flex: 1, maxWidth: "80%", marginLeft: 12 }}
+      >
         <Group gap={4} align="center">
-          {showWave && (
-            <Text span size="lg">
-              🤚
-            </Text>
-          )}
           <Text fw={500} span>
             Argo
-          </Text>
-          <Text size="xs" c="dimmed" span>
-            {time}
           </Text>
         </Group>
         <Text size="sm" mt={4}>
           {children}
+        </Text>
+        <Text size="xs" c="dimmed" mt={4}>
+          {time}
         </Text>
       </Paper>
     </Group>
@@ -96,15 +98,21 @@ function App() {
     <Container size="sm" py="xl">
       <Stack w="100%" mx="auto" mb="md">
         <UserMessage time="10:19:07 PM">Hi!</UserMessage>
-        <ArgoMessage time="10:19:07 PM" showWave>
-          How can I help you today?
-        </ArgoMessage>
+        <AIMessage time="10:19:07 PM">How can I help you today?</AIMessage>
         <UserMessage time="10:19:16 PM">
           What is the capital of France?
         </UserMessage>
-        <ArgoMessage time="10:19:16 PM">
+        <AIMessage time="10:19:16 PM">
           The capital of France is Paris.
-        </ArgoMessage>
+        </AIMessage>
+        <AIMessage time="10:20:01 PM">
+          The message boxes for both user and AI messages will now stretch to
+          take up the full available width (up to a max of 600px for
+          readability), with the avatar on the left and the message box filling
+          the rest of the row. This should give you a more modern, full-width
+          chat look as requested! Let me know if you want to adjust the max
+          width or any other details.
+        </AIMessage>
       </Stack>
 
       <Stack gap="md" align="center">
