@@ -7,8 +7,38 @@ struct AppState {
     ollama: Ollama,
 }
 
+#[derive(Debug, thiserror::Error)]
+enum ArgoError {
+    #[error("Chat error: {0}")]
+    ChatError(String),
+}
+
+#[derive(serde::Serialize)]
+#[serde(tag = "kind", content = "message")]
+#[serde(rename_all = "camelCase")]
+enum ArgoErrorKind {
+    ChatError(String),
+}
+
+impl serde::Serialize for ArgoError {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        let err_msg = self.to_string();
+        let err_kind = match self {
+            Self::ChatError(_) => ArgoErrorKind::ChatError(err_msg),
+        };
+
+        err_kind.serialize(serializer)
+    }
+}
+
 #[tauri::command]
-async fn chat_request(name: String, state: tauri::State<'_, AppState>) -> Result<String, ()> {
+async fn chat_request(
+    name: String,
+    state: tauri::State<'_, AppState>,
+) -> Result<String, ArgoError> {
     dbg!("name: {}", &name);
 
     let ollama = &state.ollama;
@@ -19,13 +49,11 @@ async fn chat_request(name: String, state: tauri::State<'_, AppState>) -> Result
         name
     );
 
-    let res = ollama.generate(GenerationRequest::new(model, prompt)).await;
-
-    if let Ok(gen_res) = res {
-        return Ok(gen_res.response);
-    }
-
-    return Ok(String::from("There was an error requesting."));
+    ollama
+        .generate(GenerationRequest::new(model, prompt))
+        .await
+        .map(|r| r.response)
+        .map_err(|err| ArgoError::ChatError(err.to_string()))
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

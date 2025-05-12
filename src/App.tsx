@@ -26,9 +26,23 @@ function App() {
 
   async function greet() {
     setLoading(true);
-    const res = await invoke<string>("chat_request", { name });
-    setResult(res ?? "");
-    setLoading(false);
+
+    try {
+      const res = await invoke<string>("chat_request", { name });
+      setResult(res ?? "");
+    } catch (error: any) {
+      const string = JSON.stringify(error, null, 2);
+
+      notifications.show({
+        title: "Error!",
+        message: string ?? "There was an error. Please try again.",
+        color: "red",
+        autoClose: 2000,
+      });
+      setResult("");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
