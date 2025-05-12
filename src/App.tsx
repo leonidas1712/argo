@@ -39,7 +39,7 @@ function UserMessage({
         radius="md"
         p="md"
         bg="gray.1"
-        style={{ flex: 1, maxWidth: "80%", marginLeft: 12 }}
+        style={{ flex: 1, maxWidth: "80%", marginLeft: "2%" }}
       >
         <Text size="sm">{children}</Text>
         <Text size="xs" c="dimmed" mt={4}>
@@ -67,7 +67,7 @@ function AIMessage({
         radius="md"
         p="md"
         bg="yellow.0"
-        style={{ flex: 1, maxWidth: "80%", marginLeft: 12 }}
+        style={{ flex: 1, maxWidth: "80%", marginLeft: "2%" }}
       >
         <Group gap={4} align="center">
           <Text fw={500} span>
