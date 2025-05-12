@@ -1,5 +1,11 @@
 [profile.dev]
-incremental = true # Compile your binary in smaller steps.
+incremental = true
+opt-level = 0
+debug = true
+
+[profile.dev.package."*"]
+opt-level = 1
+debug = false
 
 [package]
 name = "argo"
