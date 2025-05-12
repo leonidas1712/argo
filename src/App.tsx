@@ -11,73 +11,12 @@ import {
   Stack,
   Loader,
   Center,
-  Paper,
-  Group,
-  Avatar,
   Flex,
 } from "@mantine/core";
-import { IconRobot, IconUser } from "@tabler/icons-react";
 
 import ColorSchemeToggle from "./components/ColorSchemeToggle";
-
-// User message component
-function UserMessage({
-  children,
-  time,
-}: {
-  children: React.ReactNode;
-  time: string;
-}) {
-  return (
-    <Group align="flex-end" mb="xs" w="100%" wrap="nowrap">
-      <Avatar color="gray" radius="xl" size="md">
-        <IconUser />
-      </Avatar>
-      <Paper
-        radius="md"
-        p="md"
-        style={{ flex: 1, maxWidth: "80%", marginLeft: "2%" }}
-        withBorder
-      >
-        <Text size="md">{children}</Text>
-        <Text size="xs" c="dimmed" mt={4}>
-          {time}
-        </Text>
-      </Paper>
-    </Group>
-  );
-}
-
-// Argo (AI) message component
-function AIMessage({
-  children,
-  time,
-}: {
-  children: React.ReactNode;
-  time: string;
-}) {
-  return (
-    <Group align="flex-end" mb="xs" w="100%" wrap="nowrap">
-      <Avatar color="blue" radius="xl" size="md">
-        <IconRobot />
-      </Avatar>
-      <Paper
-        radius="md"
-        p="md"
-        style={{ flex: 1, maxWidth: "80%", marginLeft: "2%" }}
-        withBorder
-      >
-        <Group gap={4} align="center"></Group>
-        <Text size="md" mt={4}>
-          {children}
-        </Text>
-        <Text size="xs" c="dimmed" mt={4}>
-          {time}
-        </Text>
-      </Paper>
-    </Group>
-  );
-}
+import UserMessage from "./components/UserMessage";
+import AIMessage from "./components/AIMessage";
 
 function App() {
   const [result, setResult] = useState("");
