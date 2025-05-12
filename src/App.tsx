@@ -16,7 +16,7 @@ import {
   Avatar,
   Flex,
 } from "@mantine/core";
-import { IconRobot } from "@tabler/icons-react";
+import { IconRobot, IconUser } from "@tabler/icons-react";
 
 import ColorSchemeToggle from "./components/ColorSchemeToggle";
 
@@ -31,17 +31,15 @@ function UserMessage({
   return (
     <Group align="flex-end" mb="xs" w="100%" wrap="nowrap">
       <Avatar color="gray" radius="xl" size="md">
-        <span role="img" aria-label="user">
-          👤
-        </span>
+        <IconUser />
       </Avatar>
       <Paper
         radius="md"
         p="md"
-        bg="gray.1"
         style={{ flex: 1, maxWidth: "80%", marginLeft: "2%" }}
+        withBorder
       >
-        <Text size="sm">{children}</Text>
+        <Text size="md">{children}</Text>
         <Text size="xs" c="dimmed" mt={4}>
           {time}
         </Text>
@@ -60,21 +58,17 @@ function AIMessage({
 }) {
   return (
     <Group align="flex-end" mb="xs" w="100%" wrap="nowrap">
-      <Avatar color="yellow" radius="xl" size="md">
+      <Avatar color="blue" radius="xl" size="md">
         <IconRobot />
       </Avatar>
       <Paper
         radius="md"
         p="md"
-        bg="yellow.0"
         style={{ flex: 1, maxWidth: "80%", marginLeft: "2%" }}
+        withBorder
       >
-        <Group gap={4} align="center">
-          <Text fw={500} span>
-            Argo
-          </Text>
-        </Group>
-        <Text size="sm" mt={4}>
+        <Group gap={4} align="center"></Group>
+        <Text size="md" mt={4}>
           {children}
         </Text>
         <Text size="xs" c="dimmed" mt={4}>
