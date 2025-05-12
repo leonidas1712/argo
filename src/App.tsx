@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import "@mantine/core/styles.css";
+import { notifications } from "@mantine/notifications";
 
 import {
   Container,
@@ -86,6 +87,18 @@ function App() {
         ) : (
           <Text>Result: {result.length > 0 ? result : "Empty result."}</Text>
         )}
+
+        <Button
+          onClick={() =>
+            notifications.show({
+              title: "Default notification",
+              message: "Do not forget to star Mantine on GitHub! 🌟",
+              color: "red",
+            })
+          }
+        >
+          Show notification
+        </Button>
       </Stack>
     </Container>
   );
