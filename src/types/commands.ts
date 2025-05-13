@@ -15,6 +15,7 @@ export interface Commands {
     }
 }
 
+// Function to invoke Tauri commands and receive correct type
 export async function invokeCommand<T extends keyof Commands>(
     command: T,
     args: Commands[T]['input']

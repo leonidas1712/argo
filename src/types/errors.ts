@@ -1,5 +1,6 @@
 import { notifications } from "@mantine/notifications";
 
+// interface to match error from Tauri
 export interface ArgoError {
     kind: 'chatError';  // Add more error kinds as they're added to Rust
     message: string;
