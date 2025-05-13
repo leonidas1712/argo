@@ -12,18 +12,15 @@ struct AppState {
 
 #[tauri::command]
 async fn chat_request(
-    name: String,
+    input: String,
     state: tauri::State<'_, AppState>,
 ) -> Result<String, ArgoError> {
-    dbg!("name: {}", &name);
+    dbg!("input: {}", &input);
 
     let ollama = &state.ollama;
     let model = String::from(LLAMA);
 
-    let prompt = format!(
-        "Reply to the user with a short greeting and introduce yourself as Argo, a helpful AI assistant. The user's name is {}.",
-        name
-    );
+    let prompt = format!("Respond concisely to the user's input: {}", input);
 
     ollama
         .generate(GenerationRequest::new(model, prompt))
