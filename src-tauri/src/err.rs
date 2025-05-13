@@ -1,3 +1,11 @@
+// Automatically when doing ? on Result<T, OllamaError> and fn returns ArgoError
+// To convert OllamaError -> ArgoError::ChatError
+impl From<ollama_rs::error::OllamaError> for ArgoError {
+    fn from(value: ollama_rs::error::OllamaError) -> Self {
+        ArgoError::ChatError(value.to_string())
+    }
+}
+
 /// Error type to use in tauri commands
 #[derive(Debug, thiserror::Error)]
 pub enum ArgoError {
@@ -5,6 +13,7 @@ pub enum ArgoError {
     ChatError(String),
 }
 
+/// e.g { kind: chatError, message: "..." }
 #[derive(serde::Serialize)]
 #[serde(tag = "kind", content = "message")]
 #[serde(rename_all = "camelCase")]

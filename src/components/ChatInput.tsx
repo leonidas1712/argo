@@ -4,15 +4,13 @@ import {
   Stack,
   Textarea,
   Paper,
-  Flex,
   ActionIcon,
   Tooltip,
 } from "@mantine/core";
 import { useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
-import { notifications } from "@mantine/notifications";
 import { IconSend } from "@tabler/icons-react";
 import { invokeCommand } from "../types/commands";
+import { showErrorNotification } from "../types/errors";
 
 interface ChatInputProps {
   // to disable sending while a response is loading
@@ -37,18 +35,9 @@ function ChatInput(props: ChatInputProps) {
 
     try {
       const res = await invokeCommand("chat_request", { input });
-      console.log("RESULT:", res);
-
       setResult(res.content);
-    } catch (error: any) {
-      const string = JSON.stringify(error, null, 2);
-
-      notifications.show({
-        title: "Error!",
-        message: string ?? "There was an error. Please try again.",
-        color: "red",
-        autoClose: 2000,
-      });
+    } catch (err: any) {
+      showErrorNotification(err);
     } finally {
       setLoading(false);
       setInput("");
@@ -60,10 +49,6 @@ function ChatInput(props: ChatInputProps) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault(); // Prevent new line
       sendInput();
-      //   if (input.trim()) {
-      //     // Only send if there's actual input
-      //     sendInput();
-      //   }
     }
   };
 
@@ -73,10 +58,6 @@ function ChatInput(props: ChatInputProps) {
       onSubmit={(e) => {
         e.preventDefault();
         sendInput();
-        // if (input.trim()) {
-        //   // Only send if there's actual input
-        //   sendInput();
-        // }
       }}
     >
       <Stack gap="sm">

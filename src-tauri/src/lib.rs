@@ -2,10 +2,7 @@ mod err;
 
 use err::ArgoError;
 use ollama_rs::{
-    generation::{
-        chat::{request::ChatMessageRequest, ChatMessage},
-        completion::request::GenerationRequest,
-    },
+    generation::chat::{request::ChatMessageRequest, ChatMessage},
     Ollama,
 };
 
@@ -29,16 +26,9 @@ async fn chat_request(input: String) -> Result<ChatMessage, ArgoError> {
             &mut history,
             ChatMessageRequest::new(model, vec![ChatMessage::user(prompt)]),
         )
-        .await;
+        .await?;
 
-    res.map(|resp| resp.message)
-        .map_err(|err| ArgoError::ChatError(err.to_string()))
-
-    // ollama
-    //     .generate(GenerationRequest::new(model, prompt))
-    //     .await
-    //     .map(|r| r.response)
-    //     .map_err(|err| ArgoError::ChatError(err.to_string()))
+    Ok(res.message)
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
