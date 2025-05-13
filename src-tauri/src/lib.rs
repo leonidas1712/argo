@@ -20,6 +20,7 @@ struct ChatRequest {
     /// The most recent message (usually from the user)
     last_message: ChatMessage,
 }
+
 // Convention: every command has one argument called input = object with all params
 #[tauri::command]
 async fn chat_request(input: ChatRequest) -> Result<ChatMessage, ArgoError> {
@@ -32,6 +33,7 @@ async fn chat_request(input: ChatRequest) -> Result<ChatMessage, ArgoError> {
     let prompt = String::from("Your name is Argo. Respond concisely to the user's requests.");
 
     let mut history: Vec<ChatMessage> = vec![ChatMessage::system(prompt)];
+    history.extend(input.history);
 
     let res = ollama
         .send_chat_messages_with_history(

@@ -17,12 +17,14 @@ interface ChatInputProps {
   loading: boolean;
   // set loading state outside: so we can use it when non-streaming
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  // set AI message result outside the input
-  setResult: React.Dispatch<React.SetStateAction<string>>;
+  // chat history so far without latest message from input
+  history: ChatMessage[];
+  // use this to set chat history with new messages (user input, AI responses)
+  setHistory: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
 }
 
 function ChatInput(props: ChatInputProps) {
-  const { loading, setLoading, setResult } = props;
+  const { loading, setLoading, history, setHistory } = props;
 
   const [input, setInput] = useState("");
 
@@ -41,12 +43,25 @@ function ChatInput(props: ChatInputProps) {
 
       const req = {
         model: "llama3.2:3b",
-        history: [],
+        history,
         last_message,
       };
 
-      const res = await invokeCommand("chat_request", req);
-      setResult(res.content);
+      //   console.log("REQUEST:", req);
+
+      // Optimistically add user's last message
+      setHistory((prevHistory) => [...prevHistory, last_message]);
+      setInput("");
+
+      // Get response from LLM
+      const response = await invokeCommand("chat_request", req);
+      const aiMessage: ChatMessage = {
+        role: "assistant",
+        content: response.content,
+      };
+
+      // Add AI response back to history
+      setHistory((prevHistory) => [...prevHistory, aiMessage]);
     } catch (err: any) {
       showErrorNotification(err);
     } finally {
