@@ -1,4 +1,4 @@
-import { Button, Group, Stack, Textarea, Paper } from "@mantine/core";
+import { Button, Group, Stack, Textarea, Paper, Flex } from "@mantine/core";
 import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { notifications } from "@mantine/notifications";
@@ -45,14 +45,12 @@ function ChatInput(props: ChatInputProps) {
       }}
     >
       <Stack gap="sm">
-        {/* chat box with shared border from Paper */}
         <Paper
           withBorder
           radius="md"
           w="100%"
           style={{ padding: 0, overflow: "hidden" }}
         >
-          {/* text area without its own border (unstyled variant */}
           <Textarea
             variant="unstyled"
             placeholder="Ask me anything"
@@ -66,8 +64,8 @@ function ChatInput(props: ChatInputProps) {
             }}
           />
 
-          {/* row for model-picker button - group for spacing */}
-          <Group px="sm" pb="sm">
+          {/* Bottom row with model picker and send button */}
+          <Group px="sm" pb="sm" justify="space-between" w="100%">
             <Button
               variant="default"
               size="xs"
@@ -81,10 +79,20 @@ function ChatInput(props: ChatInputProps) {
             >
               llama3.2:3b
             </Button>
+
+            <Button
+              type="submit"
+              size="xs"
+              radius="md"
+              style={{
+                paddingLeft: 12,
+                paddingRight: 12,
+              }}
+            >
+              Send
+            </Button>
           </Group>
         </Paper>
-
-        <Button type="submit">Send</Button>
       </Stack>
     </form>
   );
