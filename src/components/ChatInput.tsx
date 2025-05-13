@@ -27,6 +27,7 @@ function ChatInput(props: ChatInputProps) {
   const { loading, setLoading, history, setHistory } = props;
 
   const [input, setInput] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
 
   async function sendInput() {
     if (loading || !input.trim()) {
@@ -91,7 +92,12 @@ function ChatInput(props: ChatInputProps) {
           withBorder
           radius="md"
           w="100%"
-          style={{ padding: 0, overflow: "hidden" }}
+          style={{
+            padding: 0,
+            overflow: "hidden",
+            borderColor: isFocused ? "#228be6" : undefined,
+            borderWidth: 1,
+          }}
         >
           <Textarea
             variant="unstyled"
@@ -101,10 +107,12 @@ function ChatInput(props: ChatInputProps) {
             minRows={2}
             maxRows={5}
             autosize
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
             styles={{
               input: { padding: 12, fontSize: "0.9rem" },
             }}
-            onKeyDown={handleKeyDown} // Add keyboard handler
+            onKeyDown={handleKeyDown}
           />
 
           {/* Bottom row with model picker and send button */}
