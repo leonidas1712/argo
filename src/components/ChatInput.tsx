@@ -12,6 +12,7 @@ import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { notifications } from "@mantine/notifications";
 import { IconSend } from "@tabler/icons-react";
+import { invokeCommand } from "../types/commands";
 
 interface ChatInputProps {
   // to disable sending while a response is loading
@@ -35,8 +36,10 @@ function ChatInput(props: ChatInputProps) {
     setLoading(true);
 
     try {
-      const res = await invoke<string>("chat_request", { input });
-      setResult(res ?? "");
+      const res = await invokeCommand("chat_request", { input });
+      console.log("RESULT:", res);
+
+      setResult(res.content);
     } catch (error: any) {
       const string = JSON.stringify(error, null, 2);
 
