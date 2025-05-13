@@ -1,7 +1,17 @@
-import { Button, Group, Stack, Textarea, Paper, Flex } from "@mantine/core";
+import {
+  Button,
+  Group,
+  Stack,
+  Textarea,
+  Paper,
+  Flex,
+  ActionIcon,
+  Tooltip,
+} from "@mantine/core";
 import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { notifications } from "@mantine/notifications";
+import { IconSend } from "@tabler/icons-react";
 
 interface ChatInputProps {
   // set loading state outside: so we can use it when non-streaming
@@ -80,17 +90,17 @@ function ChatInput(props: ChatInputProps) {
               llama3.2:3b
             </Button>
 
-            <Button
-              type="submit"
-              size="xs"
-              radius="md"
-              style={{
-                paddingLeft: 12,
-                paddingRight: 12,
-              }}
-            >
-              Send
-            </Button>
+            <Tooltip label="Submit" position="bottom">
+              <ActionIcon
+                type="submit"
+                variant="filled"
+                size="md"
+                radius="sm"
+                color="blue"
+              >
+                <IconSend size={16} />
+              </ActionIcon>
+            </Tooltip>
           </Group>
         </Paper>
       </Stack>
