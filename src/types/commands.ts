@@ -2,14 +2,18 @@ import { invoke } from '@tauri-apps/api/core';
 
 
 export interface ChatMessage {
-    role: string;
+    role: "user" | "assistant" | "system" | "tool";
     content: string;
 }
 
+// Interface for command names and their types for input, response
+// Convention: every command has one argument called input = object with all params
 export interface Commands {
     'chat_request': {
         input: {
-            input: string;
+            model: string;
+            history: ChatMessage[];
+            last_message: ChatMessage
         };
         response: ChatMessage;
     }
@@ -20,5 +24,7 @@ export async function invokeCommand<T extends keyof Commands>(
     command: T,
     args: Commands[T]['input']
 ): Promise<Commands[T]['response']> {
-    return invoke(command, args);
+    return invoke(command, {
+        input: args
+    });
 }

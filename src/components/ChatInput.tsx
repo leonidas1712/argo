@@ -9,7 +9,7 @@ import {
 } from "@mantine/core";
 import { useState } from "react";
 import { IconSend } from "@tabler/icons-react";
-import { invokeCommand } from "../types/commands";
+import { ChatMessage, invokeCommand } from "../types/commands";
 import { showErrorNotification } from "../types/errors";
 
 interface ChatInputProps {
@@ -34,7 +34,18 @@ function ChatInput(props: ChatInputProps) {
     setLoading(true);
 
     try {
-      const res = await invokeCommand("chat_request", { input });
+      const last_message: ChatMessage = {
+        role: "user",
+        content: input,
+      };
+
+      const req = {
+        model: "llama3.2:3b",
+        history: [],
+        last_message,
+      };
+
+      const res = await invokeCommand("chat_request", req);
       setResult(res.content);
     } catch (err: any) {
       showErrorNotification(err);
