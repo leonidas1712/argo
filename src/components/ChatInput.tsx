@@ -1,4 +1,4 @@
-import { Button, Group, Stack, Textarea } from "@mantine/core";
+import { Button, Group, Stack, Textarea, Paper } from "@mantine/core";
 import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { notifications } from "@mantine/notifications";
@@ -45,29 +45,44 @@ function ChatInput(props: ChatInputProps) {
       }}
     >
       <Stack gap="sm">
-        <Textarea
-          placeholder="Ask me anything"
-          value={input}
-          onChange={(e) => setInput(e.currentTarget.value)}
-          size="sm"
-          minRows={2}
-          autosize
-        />
-        <Group justify="flex-start" w="100%" mt={-8}>
-          <Button
-            variant="default"
-            size="xs"
-            radius="md"
-            style={{
-              fontWeight: 500,
-              fontFamily: "monospace",
-              paddingLeft: 12,
-              paddingRight: 12,
+        {/* chat box with shared border from Paper */}
+        <Paper
+          withBorder
+          radius="md"
+          w="100%"
+          style={{ padding: 0, overflow: "hidden" }}
+        >
+          {/* text area without its own border (unstyled variant */}
+          <Textarea
+            variant="unstyled"
+            placeholder="Ask me anything"
+            value={input}
+            onChange={(e) => setInput(e.currentTarget.value)}
+            minRows={2}
+            maxRows={5}
+            autosize
+            styles={{
+              input: { padding: 12, fontSize: "0.9rem" },
             }}
-          >
-            llama3.2:3b
-          </Button>
-        </Group>
+          />
+
+          {/* row for model-picker button - group for spacing */}
+          <Group px="sm" pb="sm">
+            <Button
+              variant="default"
+              size="xs"
+              radius="md"
+              style={{
+                fontWeight: 500,
+                fontFamily: "monospace",
+                paddingLeft: 12,
+                paddingRight: 12,
+              }}
+            >
+              llama3.2:3b
+            </Button>
+          </Group>
+        </Paper>
 
         <Button type="submit">Send</Button>
       </Stack>
