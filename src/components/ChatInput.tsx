@@ -14,6 +14,8 @@ import { notifications } from "@mantine/notifications";
 import { IconSend } from "@tabler/icons-react";
 
 interface ChatInputProps {
+  // to disable sending while a response is loading
+  loading: boolean;
   // set loading state outside: so we can use it when non-streaming
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   // set AI message result outside the input
@@ -21,11 +23,15 @@ interface ChatInputProps {
 }
 
 function ChatInput(props: ChatInputProps) {
-  const { setLoading, setResult } = props;
+  const { loading, setLoading, setResult } = props;
 
   const [input, setInput] = useState("");
 
   async function sendInput() {
+    if (loading || !input.trim()) {
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -46,12 +52,28 @@ function ChatInput(props: ChatInputProps) {
     }
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // If Enter is pressed without Shift
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); // Prevent new line
+      sendInput();
+      //   if (input.trim()) {
+      //     // Only send if there's actual input
+      //     sendInput();
+      //   }
+    }
+  };
+
   return (
     <form
       style={{ width: "80%" }}
       onSubmit={(e) => {
         e.preventDefault();
         sendInput();
+        // if (input.trim()) {
+        //   // Only send if there's actual input
+        //   sendInput();
+        // }
       }}
     >
       <Stack gap="sm">
@@ -72,6 +94,7 @@ function ChatInput(props: ChatInputProps) {
             styles={{
               input: { padding: 12, fontSize: "0.9rem" },
             }}
+            onKeyDown={handleKeyDown} // Add keyboard handler
           />
 
           {/* Bottom row with model picker and send button */}
@@ -90,13 +113,14 @@ function ChatInput(props: ChatInputProps) {
               llama3.2:3b
             </Button>
 
-            <Tooltip label="Submit" position="bottom">
+            <Tooltip label="Submit (or press Enter)" position="bottom">
               <ActionIcon
                 type="submit"
                 variant="filled"
                 size="md"
                 radius="sm"
                 color="blue"
+                disabled={loading || !input.trim()} // Disable if input is empty
               >
                 <IconSend size={16} />
               </ActionIcon>

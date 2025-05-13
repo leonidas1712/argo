@@ -49,7 +49,11 @@ function App() {
       </Stack>
 
       <Stack gap="md" align="center">
-        <ChatInput setLoading={setLoading} setResult={setResult} />
+        <ChatInput
+          loading={loading}
+          setLoading={setLoading}
+          setResult={setResult}
+        />
 
         {loading ? (
           <Center>
