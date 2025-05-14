@@ -1,4 +1,4 @@
-import { invoke } from '@tauri-apps/api/core';
+import { invoke, Channel } from '@tauri-apps/api/core';
 
 
 export interface ChatMessage {
@@ -22,6 +22,7 @@ export interface Commands {
             last_message: ArgoChatMessage
         };
         response: ArgoChatMessage;
+        extraArgs?: never;
     },
     'chat_request_stream': {
         input: {
@@ -29,16 +30,25 @@ export interface Commands {
             history: ArgoChatMessage[];
             last_message: ArgoChatMessage
         };
-        response: any
+        response: void;
+        extraArgs:{
+            onEvent: Channel<ChatStreamEvent>
+        }
     }
 }
+
+export type ChatStreamEvent =
+| { event: 'chunk'; content: string } 
+| { event: 'done'; };
 
 // Function to invoke Tauri commands and receive correct type
 export async function invokeCommand<T extends keyof Commands>(
     command: T,
-    args: Commands[T]['input']
+    args: Commands[T]['input'],
+    extraArgs?: Commands[T]['extraArgs']
 ): Promise<Commands[T]['response']> {
     return invoke(command, {
-        input: args
+        input: args,
+        ...extraArgs
     });
 }

@@ -9,8 +9,14 @@ import {
 } from "@mantine/core";
 import { useState } from "react";
 import { IconSend } from "@tabler/icons-react";
-import { ArgoChatMessage, ChatMessage, invokeCommand } from "../types/commands";
+import {
+  ArgoChatMessage,
+  ChatMessage,
+  ChatStreamEvent,
+  invokeCommand,
+} from "../types/commands";
 import { showErrorNotification } from "../types/errors";
+import { Channel } from "@tauri-apps/api/core";
 
 interface ChatInputProps {
   // to disable sending while a response is loading
@@ -64,7 +70,12 @@ function ChatInput(props: ChatInputProps) {
 
       // Try streaming
       console.log("STREAMING REQ");
-      invokeCommand("chat_request_stream", req)
+      const onEvent = new Channel<ChatStreamEvent>();
+      onEvent.onmessage = (message) => {
+        console.log(`Got chat event: ${JSON.stringify(message)}`);
+      };
+
+      invokeCommand("chat_request_stream", req, { onEvent })
         .then((res) => console.log("RESPONSE STREAMING:", res))
         .catch((err) => console.log("ERR STREAMING:", err));
 
