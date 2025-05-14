@@ -18,8 +18,8 @@ function UserMessage({
         p="md"
         style={{
           flex: 1,
-          maxWidth: "80%",
-          marginLeft: "2%",
+          maxWidth: "85%",
+          // marginLeft: "2%",
           whiteSpace: "pre-wrap",
         }}
         withBorder

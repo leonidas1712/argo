@@ -180,7 +180,7 @@ function ChatInput(props: ChatInputProps) {
 
   return (
     <form
-      style={{ width: "80%" }}
+      style={{ width: "100%" }}
       onSubmit={(e) => {
         e.preventDefault();
         sendInput();

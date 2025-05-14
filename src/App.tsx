@@ -40,7 +40,7 @@ function App() {
   }, [history, streamContent]);
 
   return (
-    <Container size="sm" py="xl" h="100vh">
+    <Container size="md" py="xl" h="100vh">
       {/* <Flex justify="flex-end">
         <ColorSchemeToggle />
       </Flex> */}
