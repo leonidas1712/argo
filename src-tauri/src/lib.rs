@@ -1,4 +1,5 @@
 mod err;
+use chrono::{DateTime, Utc};
 
 use err::ArgoError;
 use ollama_rs::{
@@ -10,20 +11,28 @@ use serde::{Deserialize, Serialize};
 // pub const QWEN: &str = "qwen3:8b";
 pub const LLAMA: &str = "llama3.2:3b";
 
+/// Argo representation of chat messages, with extra metadata
+#[derive(Serialize, Deserialize, Debug)]
+struct ArgoChatMessage {
+    message: ChatMessage,
+    /// Input from frontend is ISO 8601 string
+    timestamp: DateTime<Utc>,
+}
+
 /// Chat request from the frontend
 #[derive(Serialize, Deserialize, Debug)]
 struct ChatRequest {
     /// Model name
     model: String,
     /// History before and excluding the most recent message
-    history: Vec<ChatMessage>,
+    history: Vec<ArgoChatMessage>,
     /// The most recent message (usually from the user)
-    last_message: ChatMessage,
+    last_message: ArgoChatMessage,
 }
 
 // Convention: every command has one argument called input = object with all params
 #[tauri::command]
-async fn chat_request(input: ChatRequest) -> Result<ChatMessage, ArgoError> {
+async fn chat_request(input: ChatRequest) -> Result<ArgoChatMessage, ArgoError> {
     dbg!("input: {:?}", &input);
 
     let mut ollama = Ollama::default();
@@ -33,18 +42,28 @@ async fn chat_request(input: ChatRequest) -> Result<ChatMessage, ArgoError> {
     let prompt = String::from("Your name is Argo. Respond concisely to the user's requests.");
 
     let mut history: Vec<ChatMessage> = vec![ChatMessage::system(prompt)];
-    history.extend(input.history);
+    history.extend(
+        input
+            .history
+            .iter()
+            .map(|argo_msg| argo_msg.message.clone()),
+    );
 
     let res = ollama
         .send_chat_messages_with_history(
             &mut history,
-            ChatMessageRequest::new(model, vec![input.last_message]),
+            ChatMessageRequest::new(model, vec![input.last_message.message]),
         )
         .await?;
 
     dbg!("history after: {:?}", &history);
 
-    Ok(res.message)
+    let argo_msg = ArgoChatMessage {
+        message: res.message,
+        timestamp: Utc::now(),
+    };
+
+    Ok(argo_msg)
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

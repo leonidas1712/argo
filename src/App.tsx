@@ -7,12 +7,27 @@ import ColorSchemeToggle from "./components/ColorSchemeToggle";
 import UserMessage from "./components/UserMessage";
 import AIMessage from "./components/AIMessage";
 import ChatInput from "./components/ChatInput";
-import { ChatMessage } from "./types/commands";
+import { ArgoChatMessage, ChatMessage } from "./types/commands";
+
+function formatTimestamp(isoString: string) {
+  const date = new Date(isoString);
+
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short", // "May"
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true, // "10:42 PM" instead of 22:42
+  }).format(date);
+}
 
 function App() {
   const [loading, setLoading] = useState(false);
-  const [history, setHistory] = useState<ChatMessage[]>([]);
+  const [history, setHistory] = useState<ArgoChatMessage[]>([]);
   const viewport = useRef<HTMLDivElement>(null);
+
+  console.log("HISTORY:", history);
 
   // Auto scroll to bottom when history changes
   useEffect(() => {
@@ -39,16 +54,17 @@ function App() {
         <ScrollArea mb="sm" viewportRef={viewport}>
           <Stack>
             {history.map((msg, index) => {
-              if (msg.role === "user") {
+              const chat_msg = msg.message;
+              if (chat_msg.role === "user") {
                 return (
                   <UserMessage key={index} time="user time">
-                    {msg.content}
+                    {chat_msg.content}
                   </UserMessage>
                 );
               }
               return (
                 <AIMessage key={index} time="AI time">
-                  {msg.content}
+                  {chat_msg.content}
                 </AIMessage>
               );
             })}

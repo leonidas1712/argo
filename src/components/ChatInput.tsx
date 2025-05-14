@@ -9,7 +9,7 @@ import {
 } from "@mantine/core";
 import { useState } from "react";
 import { IconSend } from "@tabler/icons-react";
-import { ChatMessage, invokeCommand } from "../types/commands";
+import { ArgoChatMessage, ChatMessage, invokeCommand } from "../types/commands";
 import { showErrorNotification } from "../types/errors";
 
 interface ChatInputProps {
@@ -18,9 +18,9 @@ interface ChatInputProps {
   // set loading state outside: so we can use it when non-streaming
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   // chat history so far without latest message from input
-  history: ChatMessage[];
+  history: ArgoChatMessage[];
   // use this to set chat history with new messages (user input, AI responses)
-  setHistory: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
+  setHistory: React.Dispatch<React.SetStateAction<ArgoChatMessage[]>>;
 }
 
 function ChatInput(props: ChatInputProps) {
@@ -37,9 +37,14 @@ function ChatInput(props: ChatInputProps) {
     setLoading(true);
 
     try {
-      const last_message: ChatMessage = {
+      const chat_msg: ChatMessage = {
         role: "user",
         content: input,
+      };
+
+      const last_message: ArgoChatMessage = {
+        message: chat_msg,
+        timestamp: new Date().toISOString(),
       };
 
       const req = {
@@ -55,14 +60,10 @@ function ChatInput(props: ChatInputProps) {
       setInput("");
 
       // Get response from LLM
-      const response = await invokeCommand("chat_request", req);
-      const aiMessage: ChatMessage = {
-        role: "assistant",
-        content: response.content,
-      };
+      const responseMsg = await invokeCommand("chat_request", req);
 
       // Add AI response back to history
-      setHistory((prevHistory) => [...prevHistory, aiMessage]);
+      setHistory((prevHistory) => [...prevHistory, responseMsg]);
     } catch (err: any) {
       showErrorNotification(err);
     } finally {
