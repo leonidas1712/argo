@@ -62,6 +62,12 @@ function ChatInput(props: ChatInputProps) {
       // Get response from LLM
       const responseMsg = await invokeCommand("chat_request", req);
 
+      // Try streaming
+      console.log("STREAMING REQ");
+      invokeCommand("chat_request_stream", req)
+        .then((res) => console.log("RESPONSE STREAMING:", res))
+        .catch((err) => console.log("ERR STREAMING:", err));
+
       // Add AI response back to history
       setHistory((prevHistory) => [...prevHistory, responseMsg]);
     } catch (err: any) {

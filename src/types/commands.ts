@@ -22,6 +22,14 @@ export interface Commands {
             last_message: ArgoChatMessage
         };
         response: ArgoChatMessage;
+    },
+    'chat_request_stream': {
+        input: {
+            model: string;
+            history: ArgoChatMessage[];
+            last_message: ArgoChatMessage
+        };
+        response: any
     }
 }
 

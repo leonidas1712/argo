@@ -1,4 +1,7 @@
 mod err;
+use std::sync::Arc;
+use std::sync::Mutex;
+
 use chrono::{DateTime, Utc};
 
 use err::ArgoError;
@@ -7,6 +10,7 @@ use ollama_rs::{
     Ollama,
 };
 use serde::{Deserialize, Serialize};
+use tokio_stream::StreamExt;
 
 // pub const QWEN: &str = "qwen3:8b";
 pub const LLAMA: &str = "llama3.2:3b";
@@ -66,11 +70,53 @@ async fn chat_request(input: ChatRequest) -> Result<ArgoChatMessage, ArgoError> 
     Ok(argo_msg)
 }
 
+#[tauri::command]
+async fn chat_request_stream(input: ChatRequest) -> Result<(), ArgoError> {
+    dbg!("input for streaming: {:?}", &input);
+
+    let mut ollama = Ollama::default();
+
+    let model = String::from(LLAMA);
+
+    let prompt = String::from("Your name is Argo. Respond concisely to the user's requests.");
+
+    let mut history: Vec<ChatMessage> = vec![ChatMessage::system(prompt)];
+    history.extend(
+        input
+            .history
+            .iter()
+            .map(|argo_msg| argo_msg.message.clone()),
+    );
+
+    let history = Arc::new(Mutex::new(history));
+
+    let mut stream_res = ollama
+        .send_chat_messages_with_history_stream(
+            history,
+            ChatMessageRequest::new(model, vec![input.last_message.message]),
+        )
+        .await?;
+
+    println!("Beginning stream:\n");
+
+    let mut counter = 1;
+
+    while let Some(Ok(response)) = stream_res.next().await {
+        let content = response.message.content;
+        println!("{}: {}", counter, content);
+        counter += 1
+    }
+
+    println!("End of stream");
+
+    Ok(())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![chat_request])
+        .invoke_handler(tauri::generate_handler![chat_request, chat_request_stream])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
