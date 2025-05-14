@@ -43,6 +43,7 @@ function ChatInput(props: ChatInputProps) {
     }
 
     setLoading(true);
+    console.log("history:", history);
 
     try {
       const chat_msg: ChatMessage = {

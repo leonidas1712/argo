@@ -17,7 +17,12 @@ function AIMessage({
       <Paper
         radius="md"
         p="md"
-        style={{ flex: 1, maxWidth: "80%", marginLeft: "2%" }}
+        style={{
+          flex: 1,
+          maxWidth: "80%",
+          marginLeft: "2%",
+          whiteSpace: "pre-wrap",
+        }}
         withBorder
       >
         <Group gap={4} align="center"></Group>
