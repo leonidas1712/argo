@@ -27,10 +27,12 @@ interface ChatInputProps {
   history: ArgoChatMessage[];
   // use this to set chat history with new messages (user input, AI responses)
   setHistory: React.Dispatch<React.SetStateAction<ArgoChatMessage[]>>;
+  // to set content from streaming response
+  setStreamContent: React.Dispatch<React.SetStateAction<string>>;
 }
 
 function ChatInput(props: ChatInputProps) {
-  const { loading, setLoading, history, setHistory } = props;
+  const { loading, setLoading, history, setHistory, setStreamContent } = props;
 
   const [input, setInput] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -59,28 +61,52 @@ function ChatInput(props: ChatInputProps) {
         last_message,
       };
 
-      //   console.log("REQUEST:", req);
-
       // Optimistically add user's last message
       setHistory((prevHistory) => [...prevHistory, last_message]);
       setInput("");
 
-      // Get response from LLM
-      const responseMsg = await invokeCommand("chat_request", req);
-
       // Try streaming
       console.log("STREAMING REQ");
       const onEvent = new Channel<ChatStreamEvent>();
+      const buffer: string[] = [];
+
       onEvent.onmessage = (message) => {
         console.log(`Got chat event: ${JSON.stringify(message)}`);
+
+        switch (message.event) {
+          case "chunk":
+            buffer.push(message.content);
+            setStreamContent((prev) => prev + message.content);
+            break;
+          case "done":
+            const responseChatMsg: ChatMessage = {
+              role: "assistant",
+              content: buffer.join(""),
+            };
+
+            const responseArgoMsg: ArgoChatMessage = {
+              message: responseChatMsg,
+              timestamp: new Date().toISOString(),
+            };
+
+            console.log("Buffer:", buffer);
+            console.log("Content:", responseArgoMsg.message.content);
+
+            setHistory((prevHistory) => [...prevHistory, responseArgoMsg]);
+            // reset streaming msg
+            setStreamContent("");
+        }
       };
 
-      invokeCommand("chat_request_stream", req, { onEvent })
-        .then((res) => console.log("RESPONSE STREAMING:", res))
-        .catch((err) => console.log("ERR STREAMING:", err));
+      const res = await invokeCommand("chat_request_stream", req, { onEvent });
+      console.log("chat_request_stream invoke RESPONSE:", res);
+
+      // invokeCommand("chat_request_stream", req, { onEvent })
+      //   .then((res) => console.log("RESPONSE STREAMING:", res))
+      //   .catch((err) => console.log("ERR STREAMING:", err));
 
       // Add AI response back to history
-      setHistory((prevHistory) => [...prevHistory, responseMsg]);
+      // setHistory((prevHistory) => [...prevHistory, responseMsg]);
     } catch (err: any) {
       showErrorNotification(err);
     } finally {
@@ -88,6 +114,60 @@ function ChatInput(props: ChatInputProps) {
       setInput("");
     }
   }
+
+  // async function sendInput() {
+  //   if (loading || !input.trim()) {
+  //     return;
+  //   }
+
+  //   setLoading(true);
+
+  //   try {
+  //     const chat_msg: ChatMessage = {
+  //       role: "user",
+  //       content: input,
+  //     };
+
+  //     const last_message: ArgoChatMessage = {
+  //       message: chat_msg,
+  //       timestamp: new Date().toISOString(),
+  //     };
+
+  //     const req = {
+  //       model: "llama3.2:3b",
+  //       history,
+  //       last_message,
+  //     };
+
+  //     //   console.log("REQUEST:", req);
+
+  //     // Optimistically add user's last message
+  //     setHistory((prevHistory) => [...prevHistory, last_message]);
+  //     setInput("");
+
+  //     // Get response from LLM
+  //     const responseMsg = await invokeCommand("chat_request", req);
+
+  //     // Try streaming
+  //     console.log("STREAMING REQ");
+  //     const onEvent = new Channel<ChatStreamEvent>();
+  //     onEvent.onmessage = (message) => {
+  //       console.log(`Got chat event: ${JSON.stringify(message)}`);
+  //     };
+
+  //     invokeCommand("chat_request_stream", req, { onEvent })
+  //       .then((res) => console.log("RESPONSE STREAMING:", res))
+  //       .catch((err) => console.log("ERR STREAMING:", err));
+
+  //     // Add AI response back to history
+  //     setHistory((prevHistory) => [...prevHistory, responseMsg]);
+  //   } catch (err: any) {
+  //     showErrorNotification(err);
+  //   } finally {
+  //     setLoading(false);
+  //     setInput("");
+  //   }
+  // }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     // If Enter is pressed without Shift

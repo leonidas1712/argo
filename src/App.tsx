@@ -25,6 +25,8 @@ function formatTimestamp(isoString: string) {
 function App() {
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState<ArgoChatMessage[]>([]);
+  const [streamContent, setStreamContent] = useState("");
+
   const viewport = useRef<HTMLDivElement>(null);
 
   // Auto scroll to bottom when history changes
@@ -68,6 +70,13 @@ function App() {
                 </AIMessage>
               );
             })}
+
+            {/* For AI message streaming output */}
+            {streamContent && (
+              <AIMessage key={history.length} time={""}>
+                {streamContent}
+              </AIMessage>
+            )}
           </Stack>
         </ScrollArea>
 
@@ -78,6 +87,7 @@ function App() {
             setLoading={setLoading}
             history={history}
             setHistory={setHistory}
+            setStreamContent={setStreamContent}
           />
         </Stack>
       </Stack>
