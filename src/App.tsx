@@ -34,10 +34,10 @@ function App() {
     if (viewport.current) {
       viewport.current.scrollTo({
         top: viewport.current.scrollHeight,
-        behavior: "smooth",
+        behavior: "instant",
       });
     }
-  }, [history]);
+  }, [history, streamContent]);
 
   return (
     <Container size="sm" py="xl" h="100vh">
