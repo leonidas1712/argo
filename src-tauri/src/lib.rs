@@ -71,8 +71,10 @@ async fn chat_request(input: ChatRequest) -> Result<ArgoChatMessage, ArgoError> 
     Ok(argo_msg)
 }
 
+/// Event enum for streaming chat response to frontend
+/// e.g {"event":"chunk","content":" today"}
 #[derive(Clone, Serialize)]
-#[serde(tag = "event")]
+#[serde(tag = "event", rename_all = "lowercase")]
 enum ChatStreamEvent {
     Chunk { content: String },
     Done,
