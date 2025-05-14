@@ -20,7 +20,7 @@ function UserMessage({
         withBorder
       >
         <Text size="md">{children}</Text>
-        <Text size="xs" c="dimmed" mt={8}>
+        <Text size="xs" c="dimmed" mt={10}>
           {time}
         </Text>
       </Paper>

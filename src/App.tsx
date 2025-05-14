@@ -27,8 +27,6 @@ function App() {
   const [history, setHistory] = useState<ArgoChatMessage[]>([]);
   const viewport = useRef<HTMLDivElement>(null);
 
-  console.log("HISTORY:", history);
-
   // Auto scroll to bottom when history changes
   useEffect(() => {
     if (viewport.current) {
@@ -55,15 +53,17 @@ function App() {
           <Stack>
             {history.map((msg, index) => {
               const chat_msg = msg.message;
+              const timeDisplay = formatTimestamp(msg.timestamp);
+
               if (chat_msg.role === "user") {
                 return (
-                  <UserMessage key={index} time="user time">
+                  <UserMessage key={index} time={timeDisplay}>
                     {chat_msg.content}
                   </UserMessage>
                 );
               }
               return (
-                <AIMessage key={index} time="AI time">
+                <AIMessage key={index} time={timeDisplay}>
                   {chat_msg.content}
                 </AIMessage>
               );

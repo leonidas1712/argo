@@ -24,7 +24,7 @@ function AIMessage({
         <Text size="md" mt={4}>
           {children}
         </Text>
-        <Text size="xs" c="dimmed" mt={8}>
+        <Text size="xs" c="dimmed" mt={10}>
           {time}
         </Text>
       </Paper>
