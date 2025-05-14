@@ -6,6 +6,13 @@ impl From<ollama_rs::error::OllamaError> for ArgoError {
     }
 }
 
+// To handle error from tauri when sending from channel
+impl From<tauri::Error> for ArgoError {
+    fn from(value: tauri::Error) -> Self {
+        ArgoError::ChatError(value.to_string())
+    }
+}
+
 /// Error type to use in tauri commands
 #[derive(Debug, thiserror::Error)]
 pub enum ArgoError {

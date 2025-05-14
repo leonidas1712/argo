@@ -10,6 +10,7 @@ use ollama_rs::{
     Ollama,
 };
 use serde::{Deserialize, Serialize};
+use tauri::ipc::Channel;
 use tokio_stream::StreamExt;
 
 // pub const QWEN: &str = "qwen3:8b";
@@ -70,8 +71,18 @@ async fn chat_request(input: ChatRequest) -> Result<ArgoChatMessage, ArgoError> 
     Ok(argo_msg)
 }
 
+#[derive(Clone, Serialize)]
+#[serde(tag = "event")]
+enum ChatStreamEvent {
+    Chunk { content: String },
+    Done,
+}
+
 #[tauri::command]
-async fn chat_request_stream(input: ChatRequest) -> Result<(), ArgoError> {
+async fn chat_request_stream(
+    input: ChatRequest,
+    on_event: Channel<ChatStreamEvent>,
+) -> Result<(), ArgoError> {
     dbg!("input for streaming: {:?}", &input);
 
     let mut ollama = Ollama::default();
@@ -103,11 +114,18 @@ async fn chat_request_stream(input: ChatRequest) -> Result<(), ArgoError> {
 
     while let Some(Ok(response)) = stream_res.next().await {
         let content = response.message.content;
-        println!("{}: {}", counter, content);
+        println!("{}: {}", counter, &content);
+
+        let chunk = ChatStreamEvent::Chunk { content };
+
+        on_event.send(chunk)?;
+
         counter += 1
     }
 
-    println!("End of stream");
+    on_event.send(ChatStreamEvent::Done)?;
+
+    println!("\nEnd of stream");
 
     Ok(())
 }
