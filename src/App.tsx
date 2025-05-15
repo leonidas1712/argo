@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import "@mantine/core/styles.css";
+import "./styles/global.css";
 
 import { Container, Stack, Flex, ScrollArea } from "@mantine/core";
 

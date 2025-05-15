@@ -1,0 +1,5 @@
+/* src/styles/global.css */
+/* Target Mantine Paper component's paragraphs specifically - to reduce p tag margin top within msgs*/
+.mantine-Paper-root p {
+    margin-top: 0.5em;
+  }
