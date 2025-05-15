@@ -40,3 +40,7 @@ export async function sendChatRequestStream(
         onEvent
     });
 } 
+
+export async function listModels(): Promise<string[]> {
+    return invoke('list_models');
+}

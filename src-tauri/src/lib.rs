@@ -1,8 +1,7 @@
 mod err;
+use chrono::{DateTime, Utc};
 use std::sync::Arc;
 use std::sync::Mutex;
-
-use chrono::{DateTime, Utc};
 
 use err::ArgoError;
 use ollama_rs::{
@@ -35,7 +34,7 @@ struct ChatRequest {
     last_message: ArgoChatMessage,
 }
 
-// Convention: every command has one argument called input = object with all params
+/// Chat request without streaming
 #[tauri::command]
 async fn chat_request(input: ChatRequest) -> Result<ArgoChatMessage, ArgoError> {
     dbg!("input: {:?}", &input);
@@ -80,6 +79,7 @@ enum ChatStreamEvent {
     Done,
 }
 
+/// Chat request with streaming
 #[tauri::command]
 async fn chat_request_stream(
     input: ChatRequest,
@@ -132,11 +132,25 @@ async fn chat_request_stream(
     Ok(())
 }
 
+/// List available models in Ollama
+#[tauri::command]
+async fn list_models() -> Result<Vec<String>, ArgoError> {
+    let ollama = Ollama::default();
+    let models = ollama.list_local_models().await?;
+    let models: Vec<String> = models.into_iter().map(|m| m.name).collect();
+
+    Ok(models)
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![chat_request, chat_request_stream])
+        .invoke_handler(tauri::generate_handler![
+            chat_request,
+            chat_request_stream,
+            list_models
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

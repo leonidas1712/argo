@@ -7,13 +7,14 @@ import {
   Tooltip,
   Select,
 } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IconSend } from "@tabler/icons-react";
 import {
   ArgoChatMessage,
   ChatMessage,
   ChatRequestParams,
   ChatStreamEvent,
+  listModels,
   sendChatRequestStream,
 } from "../types/commands";
 import { showErrorNotification } from "../types/errors";
@@ -38,8 +39,23 @@ function ChatInput(props: ChatInputProps) {
   const [input, setInput] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [selectedModel, setSelectedModel] = useState("qwen3:0.6b");
+  const [modelOptions, setModelOptions] = useState<string[]>([]);
 
-  const modelOptions = ["qwen2.5:0.5b", "qwen3:0.6b", "llama3.2:3b"];
+  // const modelOptions = ["qwen2.5:0.5b", "qwen3:0.6b", "llama3.2:3b"];
+
+  useEffect(() => {
+    const fetchModels = async () => {
+      const models = await listModels();
+      setModelOptions(models);
+
+      const selected = models[0] ?? "No models";
+      setSelectedModel(selected);
+    };
+
+    fetchModels().catch((err) => {
+      console.log("Err fetching models:", err);
+    });
+  }, []);
 
   async function sendInput() {
     if (loading || !input.trim()) {
@@ -185,7 +201,7 @@ function ChatInput(props: ChatInputProps) {
                   height: "1.5rem",
                 },
                 wrapper: {
-                  width: "80%",
+                  width: "100%",
                 },
               }}
               comboboxProps={{
