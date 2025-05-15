@@ -11,24 +11,26 @@ export interface ArgoChatMessage {
     timestamp: string;
 }
 
+// Chat stream event for streaming request corresponding to event enum
 export type ChatStreamEvent =
     | { event: 'chunk'; content: string } 
     | { event: 'done'; };
 
+// Chat request input
 export interface ChatRequestParams {
     model: string;
     history: ArgoChatMessage[];
     last_message: ArgoChatMessage;
 }
 
-// Dedicated function for non-streaming chat request
+// Non-streaming chat request
 export async function sendChatRequest(params: ChatRequestParams): Promise<ArgoChatMessage> {
     return invoke('chat_request', {
         input: params
     });
 }
 
-// Dedicated function for streaming chat request
+// Streaming chat request. Returns void if no error - stream output through onEvent channel
 export async function sendChatRequestStream(
     params: ChatRequestParams,
     onEvent: Channel<ChatStreamEvent>
