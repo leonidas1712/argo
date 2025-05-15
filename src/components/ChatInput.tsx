@@ -1,5 +1,4 @@
 import {
-  Button,
   Group,
   Stack,
   Textarea,
@@ -50,6 +49,9 @@ function ChatInput(props: ChatInputProps) {
     setLoading(true);
     console.log("history:", history);
 
+    // Generate timestamp once to use for both optimistic update and error handling
+    const timestamp = new Date().toISOString();
+
     try {
       const chat_msg: ChatMessage = {
         role: "user",
@@ -58,7 +60,7 @@ function ChatInput(props: ChatInputProps) {
 
       const last_message: ArgoChatMessage = {
         message: chat_msg,
-        timestamp: new Date().toISOString(),
+        timestamp,
       };
 
       const req: ChatRequestParams = {
@@ -104,17 +106,16 @@ function ChatInput(props: ChatInputProps) {
         }
       };
 
-      // const res = await invokeCommand("chat_request_stream", req, { onEvent });
       const res = await sendChatRequestStream(req, onEvent);
       console.log("chat_request_stream invoke RESPONSE:", res);
-
-      // invokeCommand("chat_request_stream", req, { onEvent })
-      //   .then((res) => console.log("RESPONSE STREAMING:", res))
-      //   .catch((err) => console.log("ERR STREAMING:", err));
-
-      // Add AI response back to history
-      // setHistory((prevHistory) => [...prevHistory, responseMsg]);
     } catch (err: any) {
+      // Remove the optimistically added message using its timestamp
+      // Delay slightly so its less abrupt
+      setTimeout(() => {
+        setHistory((prevHistory) =>
+          prevHistory.filter((msg) => msg.timestamp !== timestamp)
+        );
+      }, 150);
       showErrorNotification(err);
     } finally {
       setLoading(false);
