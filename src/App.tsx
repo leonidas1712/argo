@@ -28,6 +28,7 @@ function App() {
   const [streamContent, setStreamContent] = useState("");
 
   const viewport = useRef<HTMLDivElement>(null);
+  console.log("history:", history);
 
   // Auto scroll to bottom when history changes
   useEffect(() => {

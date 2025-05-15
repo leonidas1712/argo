@@ -6,7 +6,7 @@ function UserMessage({ content, time }: { content: string; time: string }) {
   return (
     <BaseMessage time={time} icon={IconUser} avatarColor="yellow">
       {/* <ReactMarkdown>{content}</ReactMarkdown> */}
-      <p style={{ whiteSpace: "pre-wrap", marginTop: 0 }}>{content}</p>
+      <p style={{ whiteSpace: "pre-wrap" }}>{content}</p>
     </BaseMessage>
   );
 }
