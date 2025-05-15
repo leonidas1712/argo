@@ -33,6 +33,7 @@ interface ChatInputProps {
 
 function ChatInput(props: ChatInputProps) {
   const { loading, setLoading, history, setHistory, setStreamContent } = props;
+  // console.log("history:", history);
 
   const [input, setInput] = useState("");
   const [isFocused, setIsFocused] = useState(false);

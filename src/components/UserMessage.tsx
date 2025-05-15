@@ -1,16 +1,12 @@
 import { IconUser } from "@tabler/icons-react";
 import BaseMessage from "./BaseMessage";
+import ReactMarkdown from "react-markdown";
 
-function UserMessage({
-  children,
-  time,
-}: {
-  children: React.ReactNode;
-  time: string;
-}) {
+function UserMessage({ content, time }: { content: string; time: string }) {
   return (
     <BaseMessage time={time} icon={IconUser} avatarColor="yellow">
-      {children}
+      {/* <ReactMarkdown>{content}</ReactMarkdown> */}
+      <p style={{ whiteSpace: "pre-wrap", marginTop: 0 }}>{content}</p>
     </BaseMessage>
   );
 }

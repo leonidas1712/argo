@@ -26,11 +26,16 @@ function BaseMessage({
         style={{
           flex: 1,
           maxWidth: "85%",
-          whiteSpace: "pre-wrap",
+          //   whiteSpace: "pre-wrap" - this property interferes with ReactMarkdown,
+          "& > p:first-of-type": {
+            marginTop: 0,
+            marginBottom: 0,
+          },
         }}
         withBorder
       >
-        <Text size="md">{children}</Text>
+        {/* <Text size="md">{children}</Text> */}
+        {children}
         <Text size="xs" c="dimmed" mt={10}>
           {time}
         </Text>

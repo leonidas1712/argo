@@ -7,7 +7,7 @@ import ColorSchemeToggle from "./components/ColorSchemeToggle";
 import UserMessage from "./components/UserMessage";
 import AIMessage from "./components/AIMessage";
 import ChatInput from "./components/ChatInput";
-import { ArgoChatMessage, ChatMessage } from "./types/commands";
+import { ArgoChatMessage } from "./types/commands";
 
 function formatTimestamp(isoString: string) {
   const date = new Date(isoString);
@@ -59,23 +59,29 @@ function App() {
 
               if (chat_msg.role === "user") {
                 return (
-                  <UserMessage key={index} time={timeDisplay}>
-                    {chat_msg.content}
-                  </UserMessage>
+                  <UserMessage
+                    key={index}
+                    time={timeDisplay}
+                    content={chat_msg.content}
+                  />
                 );
               }
               return (
-                <AIMessage key={index} time={timeDisplay}>
-                  {chat_msg.content}
-                </AIMessage>
+                <AIMessage
+                  key={index}
+                  time={timeDisplay}
+                  content={chat_msg.content}
+                />
               );
             })}
 
             {/* For AI message streaming output */}
             {streamContent && (
-              <AIMessage key={history.length} time={""}>
-                {streamContent}
-              </AIMessage>
+              <AIMessage
+                key={history.length}
+                time={""}
+                content={streamContent}
+              />
             )}
           </Stack>
         </ScrollArea>

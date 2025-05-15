@@ -1,16 +1,11 @@
 import { IconRobot } from "@tabler/icons-react";
 import BaseMessage from "./BaseMessage";
+import ReactMarkdown from "react-markdown";
 
-function AIMessage({
-  children,
-  time,
-}: {
-  children: React.ReactNode;
-  time: string;
-}) {
+function AIMessage({ content, time }: { content: string; time: string }) {
   return (
     <BaseMessage time={time} icon={IconRobot} avatarColor="blue">
-      {children}
+      <ReactMarkdown>{content}</ReactMarkdown>
     </BaseMessage>
   );
 }
