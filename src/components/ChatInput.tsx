@@ -118,60 +118,6 @@ function ChatInput(props: ChatInputProps) {
     }
   }
 
-  // async function sendInput() {
-  //   if (loading || !input.trim()) {
-  //     return;
-  //   }
-
-  //   setLoading(true);
-
-  //   try {
-  //     const chat_msg: ChatMessage = {
-  //       role: "user",
-  //       content: input,
-  //     };
-
-  //     const last_message: ArgoChatMessage = {
-  //       message: chat_msg,
-  //       timestamp: new Date().toISOString(),
-  //     };
-
-  //     const req = {
-  //       model: "llama3.2:3b",
-  //       history,
-  //       last_message,
-  //     };
-
-  //     //   console.log("REQUEST:", req);
-
-  //     // Optimistically add user's last message
-  //     setHistory((prevHistory) => [...prevHistory, last_message]);
-  //     setInput("");
-
-  //     // Get response from LLM
-  //     const responseMsg = await invokeCommand("chat_request", req);
-
-  //     // Try streaming
-  //     console.log("STREAMING REQ");
-  //     const onEvent = new Channel<ChatStreamEvent>();
-  //     onEvent.onmessage = (message) => {
-  //       console.log(`Got chat event: ${JSON.stringify(message)}`);
-  //     };
-
-  //     invokeCommand("chat_request_stream", req, { onEvent })
-  //       .then((res) => console.log("RESPONSE STREAMING:", res))
-  //       .catch((err) => console.log("ERR STREAMING:", err));
-
-  //     // Add AI response back to history
-  //     setHistory((prevHistory) => [...prevHistory, responseMsg]);
-  //   } catch (err: any) {
-  //     showErrorNotification(err);
-  //   } finally {
-  //     setLoading(false);
-  //     setInput("");
-  //   }
-  // }
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     // If Enter is pressed without Shift
     if (e.key === "Enter" && !e.shiftKey) {

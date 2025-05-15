@@ -26,11 +26,6 @@ function BaseMessage({
         style={{
           flex: 1,
           maxWidth: "85%",
-          //   whiteSpace: "pre-wrap" - this property interferes with ReactMarkdown,
-          "& > p:first-of-type": {
-            marginTop: 0,
-            marginBottom: 0,
-          },
         }}
         withBorder
       >
