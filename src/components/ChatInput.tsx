@@ -12,8 +12,9 @@ import { IconSend } from "@tabler/icons-react";
 import {
   ArgoChatMessage,
   ChatMessage,
+  ChatRequestParams,
   ChatStreamEvent,
-  invokeCommand,
+  sendChatRequestStream,
 } from "../types/commands";
 import { showErrorNotification } from "../types/errors";
 import { Channel } from "@tauri-apps/api/core";
@@ -33,7 +34,6 @@ interface ChatInputProps {
 
 function ChatInput(props: ChatInputProps) {
   const { loading, setLoading, history, setHistory, setStreamContent } = props;
-  // console.log("history:", history);
 
   const [input, setInput] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -57,7 +57,7 @@ function ChatInput(props: ChatInputProps) {
         timestamp: new Date().toISOString(),
       };
 
-      const req = {
+      const req: ChatRequestParams = {
         model: "llama3.2:3b",
         history,
         last_message,
@@ -100,7 +100,8 @@ function ChatInput(props: ChatInputProps) {
         }
       };
 
-      const res = await invokeCommand("chat_request_stream", req, { onEvent });
+      // const res = await invokeCommand("chat_request_stream", req, { onEvent });
+      const res = await sendChatRequestStream(req, onEvent);
       console.log("chat_request_stream invoke RESPONSE:", res);
 
       // invokeCommand("chat_request_stream", req, { onEvent })

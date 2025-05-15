@@ -1,6 +1,5 @@
 import { invoke, Channel } from '@tauri-apps/api/core';
 
-
 export interface ChatMessage {
     role: "user" | "assistant" | "system" | "tool";
     content: string;
@@ -8,47 +7,34 @@ export interface ChatMessage {
 
 export interface ArgoChatMessage {
     message: ChatMessage;
-    // ISO 8601 datetime string
+    // ISO 8601 format
     timestamp: string;
 }
 
-// Interface for command names and their types for input, response
-// Convention: every command has one argument called input = object with all params
-export interface Commands {
-    'chat_request': {
-        input: {
-            model: string;
-            history: ArgoChatMessage[];
-            last_message: ArgoChatMessage
-        };
-        response: ArgoChatMessage;
-        extraArgs?: never;
-    },
-    'chat_request_stream': {
-        input: {
-            model: string;
-            history: ArgoChatMessage[];
-            last_message: ArgoChatMessage
-        };
-        response: void;
-        extraArgs:{
-            onEvent: Channel<ChatStreamEvent>
-        }
-    }
+export type ChatStreamEvent =
+    | { event: 'chunk'; content: string } 
+    | { event: 'done'; };
+
+export interface ChatRequestParams {
+    model: string;
+    history: ArgoChatMessage[];
+    last_message: ArgoChatMessage;
 }
 
-export type ChatStreamEvent =
-| { event: 'chunk'; content: string } 
-| { event: 'done'; };
-
-// Function to invoke Tauri commands and receive correct type
-export async function invokeCommand<T extends keyof Commands>(
-    command: T,
-    args: Commands[T]['input'],
-    extraArgs?: Commands[T]['extraArgs']
-): Promise<Commands[T]['response']> {
-    return invoke(command, {
-        input: args,
-        ...extraArgs
+// Dedicated function for non-streaming chat request
+export async function sendChatRequest(params: ChatRequestParams): Promise<ArgoChatMessage> {
+    return invoke('chat_request', {
+        input: params
     });
 }
+
+// Dedicated function for streaming chat request
+export async function sendChatRequestStream(
+    params: ChatRequestParams,
+    onEvent: Channel<ChatStreamEvent>
+): Promise<void> {
+    return invoke('chat_request_stream', {
+        input: params,
+        onEvent
+    });
+} 
