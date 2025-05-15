@@ -19,7 +19,7 @@ export const isArgoError = (err: unknown): err is ArgoError => {
 
 // Show error notification based on ArgoError (known from Tauri) or other error
 export function showErrorNotification(err: unknown) {
-    const autoClose = 3000;
+    const autoClose = 5000;
     if (isArgoError(err)) {
         notifications.show({
           title: "Error",

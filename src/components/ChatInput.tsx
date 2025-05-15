@@ -6,6 +6,7 @@ import {
   Paper,
   ActionIcon,
   Tooltip,
+  Select,
 } from "@mantine/core";
 import { useState } from "react";
 import { IconSend } from "@tabler/icons-react";
@@ -37,6 +38,9 @@ function ChatInput(props: ChatInputProps) {
 
   const [input, setInput] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const [selectedModel, setSelectedModel] = useState("qwen3:0.6b");
+
+  const modelOptions = ["qwen2.5:0.5b", "qwen3:0.6b", "llama3.2:3b"];
 
   async function sendInput() {
     if (loading || !input.trim()) {
@@ -58,7 +62,7 @@ function ChatInput(props: ChatInputProps) {
       };
 
       const req: ChatRequestParams = {
-        model: "llama3.2:3b",
+        model: selectedModel,
         history,
         last_message,
       };
@@ -164,19 +168,29 @@ function ChatInput(props: ChatInputProps) {
 
           {/* Bottom row with model picker and send button */}
           <Group px="sm" pb="sm" justify="space-between" w="100%">
-            <Button
+            <Select
+              data={modelOptions}
+              value={selectedModel}
+              onChange={(value) => setSelectedModel(value || "qwen3:0.6b")}
               variant="default"
-              size="xs"
+              size="sm"
               radius="md"
-              style={{
-                fontWeight: 500,
-                fontFamily: "monospace",
-                paddingLeft: 12,
-                paddingRight: 12,
+              styles={{
+                input: {
+                  fontWeight: 500,
+                  // make it more compact
+                  paddingRight: 0,
+                  minHeight: "unset",
+                  height: "1.5rem",
+                },
+                wrapper: {
+                  width: "80%",
+                },
               }}
-            >
-              llama3.2:3b
-            </Button>
+              comboboxProps={{
+                transitionProps: { transition: "pop", duration: 100 },
+              }}
+            />
 
             <Tooltip label="Submit (or press Enter)" position="bottom">
               <ActionIcon

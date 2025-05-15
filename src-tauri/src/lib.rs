@@ -42,7 +42,7 @@ async fn chat_request(input: ChatRequest) -> Result<ArgoChatMessage, ArgoError> 
 
     let mut ollama = Ollama::default();
 
-    let model = String::from(LLAMA);
+    let model = String::from(input.model);
 
     let prompt = String::from("Your name is Argo. Respond concisely to the user's requests.");
 
@@ -87,9 +87,9 @@ async fn chat_request_stream(
 ) -> Result<(), ArgoError> {
     dbg!("input for streaming: {:?}", &input);
 
-    let mut ollama = Ollama::default();
+    let ollama = Ollama::default();
 
-    let model = String::from(LLAMA);
+    let model = String::from(input.model);
 
     let prompt = String::from("Your name is Argo. Respond concisely to the user's requests.");
 
