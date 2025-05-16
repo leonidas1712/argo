@@ -1,5 +1,8 @@
+mod chat;
 mod err;
-use chrono::{DateTime, Utc};
+
+use chat::{ArgoChatMessage, ChatRequest, ChatStreamEvent};
+use chrono::Utc;
 use std::sync::Arc;
 use std::sync::Mutex;
 
@@ -8,31 +11,9 @@ use ollama_rs::{
     generation::chat::{request::ChatMessageRequest, ChatMessage},
     Ollama,
 };
-use serde::{Deserialize, Serialize};
+
 use tauri::ipc::Channel;
 use tokio_stream::StreamExt;
-
-// pub const QWEN: &str = "qwen3:8b";
-pub const LLAMA: &str = "llama3.2:3b";
-
-/// Argo representation of chat messages, with extra metadata
-#[derive(Serialize, Deserialize, Debug)]
-struct ArgoChatMessage {
-    message: ChatMessage,
-    /// Input from frontend is ISO 8601 string
-    timestamp: DateTime<Utc>,
-}
-
-/// Chat request from the frontend
-#[derive(Serialize, Deserialize, Debug)]
-struct ChatRequest {
-    /// Model name
-    model: String,
-    /// History before and excluding the most recent message
-    history: Vec<ArgoChatMessage>,
-    /// The most recent message (usually from the user)
-    last_message: ArgoChatMessage,
-}
 
 /// Chat request without streaming
 #[tauri::command]
@@ -68,15 +49,6 @@ async fn chat_request(input: ChatRequest) -> Result<ArgoChatMessage, ArgoError> 
     };
 
     Ok(argo_msg)
-}
-
-/// Event enum for streaming chat response to frontend
-/// e.g {"event":"chunk","content":" today"}
-#[derive(Clone, Serialize)]
-#[serde(tag = "event", rename_all = "lowercase")]
-enum ChatStreamEvent {
-    Chunk { content: String },
-    Done,
 }
 
 /// Chat request with streaming
