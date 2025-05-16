@@ -53,7 +53,7 @@ function ChatInput(props: ChatInputProps) {
   }, [modelOptions]);
 
   async function sendInput() {
-    if (loading || !input.trim()) {
+    if (loading || !input.trim() || !modelOptions?.length) {
       return;
     }
 
@@ -211,7 +211,7 @@ function ChatInput(props: ChatInputProps) {
                 size="md"
                 radius="sm"
                 color="blue"
-                disabled={loading || !input.trim()} // Disable if input is empty
+                disabled={loading || !input.trim() || !modelOptions?.length} // Disable if input is empty
               >
                 <IconSend size={16} />
               </ActionIcon>
