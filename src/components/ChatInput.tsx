@@ -20,6 +20,7 @@ import {
 import { showErrorNotification } from "../types/errors";
 import { Channel } from "@tauri-apps/api/core";
 import { useQuery } from "@tanstack/react-query";
+import { useModels } from "../hooks/useModels";
 
 interface ChatInputProps {
   // to disable sending while a response is loading
@@ -40,33 +41,16 @@ function ChatInput(props: ChatInputProps) {
   const [input, setInput] = useState("");
   const [isFocused, setIsFocused] = useState(false);
 
-  const modelsQuery = useQuery({
-    queryKey: ["listModels"],
-    queryFn: listModels,
-  });
+  const { data: modelOptions } = useModels();
 
-  const modelOptions = modelsQuery.data;
-  console.log("MODEL OPTIONS:", modelOptions);
+  const [selectedModel, setSelectedModel] = useState("");
 
-  const [selectedModel, setSelectedModel] = useState(modelOptions?.[0] ?? "");
-
-  // const [modelOptions, setModelOptions] = useState<string[]>([]);
-
-  // const modelOptions = ["qwen2.5:0.5b", "qwen3:0.6b", "llama3.2:3b"];
-
-  // useEffect(() => {
-  //   const fetchModels = async () => {
-  //     const models = await listModels();
-  //     setModelOptions(models);
-
-  //     const selected = models[0] ?? "No models";
-  //     setSelectedModel(selected);
-  //   };
-
-  //   fetchModels().catch((err) => {
-  //     console.log("Err fetching models:", err);
-  //   });
-  // }, []);
+  useEffect(() => {
+    // console.log("USE EFF TO SET MODEL");
+    if (modelOptions && modelOptions.length > 0) {
+      setSelectedModel(modelOptions[0]);
+    }
+  }, [modelOptions]);
 
   async function sendInput() {
     if (loading || !input.trim()) {
@@ -199,7 +183,7 @@ function ChatInput(props: ChatInputProps) {
             <Select
               data={modelOptions}
               value={selectedModel}
-              onChange={(value) => setSelectedModel(value || "qwen3:0.6b")}
+              onChange={(value) => setSelectedModel(value || "")}
               variant="default"
               size="sm"
               radius="md"
