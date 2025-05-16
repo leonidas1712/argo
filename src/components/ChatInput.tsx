@@ -37,7 +37,6 @@ function ChatInput(props: ChatInputProps) {
   const chatMutation = useChatMutation();
 
   useEffect(() => {
-    console.log("USE EFF CHAT INPUT");
     if (modelOptions && modelOptions.length > 0) {
       setSelectedModel(modelOptions[0]);
     }
