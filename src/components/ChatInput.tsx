@@ -19,6 +19,7 @@ import {
 } from "../types/commands";
 import { showErrorNotification } from "../types/errors";
 import { Channel } from "@tauri-apps/api/core";
+import { useQuery } from "@tanstack/react-query";
 
 interface ChatInputProps {
   // to disable sending while a response is loading
@@ -40,6 +41,10 @@ function ChatInput(props: ChatInputProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [selectedModel, setSelectedModel] = useState("qwen3:0.6b");
   const [modelOptions, setModelOptions] = useState<string[]>([]);
+
+  // const query = useQuery({
+  //   queryKey: ['listModels'],
+  // })
 
   // const modelOptions = ["qwen2.5:0.5b", "qwen3:0.6b", "llama3.2:3b"];
 

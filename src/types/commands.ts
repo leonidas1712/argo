@@ -41,6 +41,7 @@ export async function sendChatRequestStream(
     });
 } 
 
+// Get list of models available in Ollama
 export async function listModels(): Promise<string[]> {
     return invoke('list_models');
 }
