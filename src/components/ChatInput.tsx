@@ -39,28 +39,34 @@ function ChatInput(props: ChatInputProps) {
 
   const [input, setInput] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-  const [selectedModel, setSelectedModel] = useState("qwen3:0.6b");
-  const [modelOptions, setModelOptions] = useState<string[]>([]);
 
-  // const query = useQuery({
-  //   queryKey: ['listModels'],
-  // })
+  const modelsQuery = useQuery({
+    queryKey: ["listModels"],
+    queryFn: listModels,
+  });
+
+  const modelOptions = modelsQuery.data;
+  console.log("MODEL OPTIONS:", modelOptions);
+
+  const [selectedModel, setSelectedModel] = useState(modelOptions?.[0] ?? "");
+
+  // const [modelOptions, setModelOptions] = useState<string[]>([]);
 
   // const modelOptions = ["qwen2.5:0.5b", "qwen3:0.6b", "llama3.2:3b"];
 
-  useEffect(() => {
-    const fetchModels = async () => {
-      const models = await listModels();
-      setModelOptions(models);
+  // useEffect(() => {
+  //   const fetchModels = async () => {
+  //     const models = await listModels();
+  //     setModelOptions(models);
 
-      const selected = models[0] ?? "No models";
-      setSelectedModel(selected);
-    };
+  //     const selected = models[0] ?? "No models";
+  //     setSelectedModel(selected);
+  //   };
 
-    fetchModels().catch((err) => {
-      console.log("Err fetching models:", err);
-    });
-  }, []);
+  //   fetchModels().catch((err) => {
+  //     console.log("Err fetching models:", err);
+  //   });
+  // }, []);
 
   async function sendInput() {
     if (loading || !input.trim()) {
