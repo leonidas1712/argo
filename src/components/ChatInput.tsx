@@ -9,18 +9,9 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { IconSend } from "@tabler/icons-react";
-import {
-  ArgoChatMessage,
-  ChatMessage,
-  ChatRequestParams,
-  ChatStreamEvent,
-  listModels,
-  sendChatRequestStream,
-} from "../types/commands";
-import { showErrorNotification } from "../types/errors";
-import { Channel } from "@tauri-apps/api/core";
-import { useQuery } from "@tanstack/react-query";
+import { ArgoChatMessage, ChatMessage } from "../types/commands";
 import { useModels } from "../hooks/useModels";
+import { useChatMutation } from "../hooks/useChatMutation";
 
 interface ChatInputProps {
   // to disable sending while a response is loading
@@ -37,16 +28,16 @@ interface ChatInputProps {
 
 function ChatInput(props: ChatInputProps) {
   const { loading, setLoading, history, setHistory, setStreamContent } = props;
-
   const [input, setInput] = useState("");
   const [isFocused, setIsFocused] = useState(false);
 
   const { data: modelOptions } = useModels();
-
   const [selectedModel, setSelectedModel] = useState("");
 
+  const chatMutation = useChatMutation();
+
   useEffect(() => {
-    // console.log("USE EFF TO SET MODEL");
+    console.log("USE EFF CHAT INPUT");
     if (modelOptions && modelOptions.length > 0) {
       setSelectedModel(modelOptions[0]);
     }
@@ -57,87 +48,54 @@ function ChatInput(props: ChatInputProps) {
       return;
     }
 
-    setLoading(true);
-    console.log("history:", history);
-
-    // Generate timestamp once to use for both optimistic update and error handling
+    // Construct message from user including timestamp
     const timestamp = new Date().toISOString();
+    const chat_msg: ChatMessage = {
+      role: "user",
+      content: input,
+    };
+
+    const last_message: ArgoChatMessage = {
+      message: chat_msg,
+      timestamp,
+    };
+
+    // Optimistically add user message
+    setHistory((prev) => [...prev, last_message]);
+    setInput("");
+    setLoading(true);
 
     try {
-      const chat_msg: ChatMessage = {
-        role: "user",
-        content: input,
-      };
-
-      const last_message: ArgoChatMessage = {
-        message: chat_msg,
-        timestamp,
-      };
-
-      const req: ChatRequestParams = {
-        model: selectedModel,
-        history,
-        last_message,
-      };
-
-      // Optimistically add user's last message
-      setHistory((prevHistory) => [...prevHistory, last_message]);
-      setInput("");
-
-      // Try streaming
-      console.log("STREAMING REQ");
-      const onEvent = new Channel<ChatStreamEvent>();
-      const buffer: string[] = [];
-
-      onEvent.onmessage = (message) => {
-        console.log(`Got chat event: ${JSON.stringify(message)}`);
-
-        switch (message.event) {
-          case "chunk":
-            buffer.push(message.content);
-            setStreamContent((prev) => prev + message.content);
-            break;
-          case "done":
-            const responseChatMsg: ChatMessage = {
-              role: "assistant",
-              content: buffer.join(""),
-            };
-
-            const responseArgoMsg: ArgoChatMessage = {
-              message: responseChatMsg,
-              timestamp: new Date().toISOString(),
-            };
-
-            console.log("Buffer:", buffer);
-            console.log("Content:", responseArgoMsg.message.content);
-
-            setHistory((prevHistory) => [...prevHistory, responseArgoMsg]);
-            // reset streaming msg
-            setStreamContent("");
-        }
-      };
-
-      const res = await sendChatRequestStream(req, onEvent);
-      console.log("chat_request_stream invoke RESPONSE:", res);
-    } catch (err: any) {
-      // Remove the optimistically added message using its timestamp
-      // Delay slightly so its less abrupt
+      // mutateAsync lets us await the promise and catch error sequentially
+      await chatMutation.mutateAsync({
+        params: {
+          model: selectedModel,
+          history,
+          last_message,
+        },
+        // receive chunk: set stream content to include it
+        onChunk: (content) => {
+          setStreamContent((prev) => prev + content);
+        },
+        // done: add AI response to history and clear streaming content
+        onComplete: (responseMsg) => {
+          setHistory((prev) => [...prev, responseMsg]);
+          setStreamContent("");
+        },
+      });
+    } catch (error) {
+      // Remove optimistically added message on error
       setTimeout(() => {
-        setHistory((prevHistory) =>
-          prevHistory.filter((msg) => msg.timestamp !== timestamp)
-        );
+        setHistory((prev) => prev.filter((msg) => msg.timestamp !== timestamp));
       }, 150);
-      showErrorNotification(err);
     } finally {
       setLoading(false);
-      setInput("");
     }
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // If Enter is pressed without Shift
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault(); // Prevent new line
+      e.preventDefault();
       sendInput();
     }
   };
