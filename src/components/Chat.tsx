@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Flex, Stack } from "@mantine/core";
+import { Button, Flex, Stack } from "@mantine/core";
 import MessageList from "./MessageList";
 import ChatInput from "./ChatInput";
 import ColorSchemeToggle from "./ColorSchemeToggle";
-import { ArgoChatMessage } from "../types/commands";
+import { ArgoChatMessage, getMessageHistory } from "../types/commands";
 
 // Main component for one chat session
 function Chat() {
@@ -11,6 +11,9 @@ function Chat() {
   const [history, setHistory] = useState<ArgoChatMessage[]>([]);
   const [streamContent, setStreamContent] = useState("");
 
+  const click = async () => {
+    await getMessageHistory();
+  };
   return (
     <>
       <Flex justify="flex-end">
@@ -20,6 +23,7 @@ function Chat() {
       <MessageList history={history} streamContent={streamContent} />
 
       <Stack gap="md" align="center">
+        <Button onClick={click}>Test</Button>
         <ChatInput
           loading={loading}
           setLoading={setLoading}

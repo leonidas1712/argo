@@ -45,3 +45,10 @@ export async function sendChatRequestStream(
 export async function listModels(): Promise<string[]> {
     return invoke('list_models');
 }
+
+// Get message history for a thread
+export async function getMessageHistory(): Promise<void> {
+    return invoke('get_message_history', {
+        threadId: 'test'
+    });
+}

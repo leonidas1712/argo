@@ -112,6 +112,7 @@ pub async fn get_message_history(
     thread_id: String,
     db: State<'_, Database>,
 ) -> Result<(), ArgoError> {
+    dbg!("thread_id: {}", &thread_id);
     let messages = get_messages(&db.pool, thread_id).await?;
     println!("msgs: {:?}", messages);
     Ok(())
