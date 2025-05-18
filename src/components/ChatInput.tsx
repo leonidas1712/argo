@@ -6,6 +6,7 @@ import {
   ActionIcon,
   Tooltip,
   Select,
+  Loader,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { IconSend } from "@tabler/icons-react";
@@ -161,18 +162,22 @@ function ChatInput(props: ChatInputProps) {
               }}
             />
 
-            <Tooltip label="Submit (or press Enter)" position="bottom">
-              <ActionIcon
-                type="submit"
-                variant="filled"
-                size="md"
-                radius="sm"
-                color="blue"
-                disabled={loading || !input.trim() || !modelOptions?.length} // Disable if input is empty
-              >
-                <IconSend size={16} />
-              </ActionIcon>
-            </Tooltip>
+            {loading ? (
+              <Loader size="sm" />
+            ) : (
+              <Tooltip label="Submit (or press Enter)" position="bottom">
+                <ActionIcon
+                  type="submit"
+                  variant="filled"
+                  size="md"
+                  radius="sm"
+                  color="blue"
+                  disabled={loading || !input.trim() || !modelOptions?.length} // Disable if input is empty
+                >
+                  <IconSend size={16} />
+                </ActionIcon>
+              </Tooltip>
+            )}
           </Group>
         </Paper>
       </Stack>

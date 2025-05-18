@@ -65,6 +65,8 @@ pub async fn chat_request_stream(
             .map(|argo_msg| argo_msg.message.clone()),
     );
 
+    dbg!("input history: {:?}", &history);
+
     let history = Arc::new(Mutex::new(history));
 
     let mut stream_res = ollama

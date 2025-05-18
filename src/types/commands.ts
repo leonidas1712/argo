@@ -47,8 +47,9 @@ export async function listModels(): Promise<string[]> {
 }
 
 // Get message history for a thread
-export async function getMessageHistory(): Promise<void> {
+export async function getMessageHistory(threadId: string): Promise<ArgoChatMessage[]> {
+    console.log("getMessageHistory invoked");
     return invoke('get_message_history', {
-        threadId: 'test'
+        threadId
     });
 }
