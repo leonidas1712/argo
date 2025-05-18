@@ -35,4 +35,5 @@ ollama-rs = { version = "0.3.1", features = ["stream"] }
 thiserror = "2.0.12"
 chrono = { version = "0.4.41", features = ["serde"] }
 tokio-stream = "0.1.17"
+sqlx = { version = "0.8.5", features = ["sqlite", "chrono", "macros", "runtime-tokio"] }
 
