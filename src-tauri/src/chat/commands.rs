@@ -111,9 +111,13 @@ pub async fn chat_request_stream(
 pub async fn get_message_history(
     thread_id: String,
     db: State<'_, Database>,
-) -> Result<(), ArgoError> {
+) -> Result<Vec<ArgoChatMessage>, ArgoError> {
     dbg!("thread_id: {}", &thread_id);
+
     let messages = get_messages(&db.pool, thread_id).await?;
-    println!("msgs: {:?}", messages);
-    Ok(())
+    let messages: Vec<ArgoChatMessage> = messages.into_iter().map(|m| m.into()).collect();
+
+    dbg!("msgs argo: {:?}", &messages);
+
+    Ok(messages)
 }
