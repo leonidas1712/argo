@@ -1,7 +1,6 @@
-use std::{env, fs};
-
 use anyhow::Result;
 use sqlx::{Pool, Sqlite, SqlitePool};
+use std::{env, fs};
 use tauri::{AppHandle, Manager};
 
 /// Database for local data backed by SQLite
@@ -19,8 +18,6 @@ impl Database {
             .path()
             .app_data_dir()
             .expect("failed to get app directory");
-
-        dbg!("app_data_dir:{}", &app_dir);
 
         // ensure app dir created if not exists
         fs::create_dir_all(&app_dir)?;
@@ -45,7 +42,3 @@ impl Database {
         Ok(Database { pool })
     }
 }
-
-// State management for Tauri
-// #[allow(dead_code)]
-// pub struct DatabaseState(pub Pool<Sqlite>);
