@@ -130,7 +130,7 @@ async fn chat_request_stream(
     };
     let assistant_msg_row: MessageRow = assistant_msg.into();
 
-    // Save both msgs in one txn
+    // Save both msgs in one txn - so its atomic
     let mut tx = db.pool.begin().await?;
     insert_message(&mut *tx, &user_msg_row).await?;
     insert_message(&mut *tx, &assistant_msg_row).await?;

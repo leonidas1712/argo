@@ -65,7 +65,7 @@ impl From<ArgoChatMessage> for MessageRow {
 
 /// Save one MessageRow to DB
 // https://docs.rs/sqlx/latest/sqlx/trait.Executor.html
-// &Pool, &mut Connection impl Executor
+// &Pool, &mut Connection impl Executor - trait for executing queries
 // Transaction and PoolConnection no Executor impls. But we can just deref when passing in
 // &mut transaction -> &mut *transaction
 // &mut connection -> &mut *connection
