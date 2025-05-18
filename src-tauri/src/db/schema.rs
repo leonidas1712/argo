@@ -1,6 +1,8 @@
 // Schema for saving and reading from DB along with conversions to chat logic layer
 
 use crate::chat::types::ArgoChatMessage;
+use chrono::{DateTime, Utc};
+use ollama_rs::generation::chat::{ChatMessage, MessageRole};
 use uuid::Uuid;
 
 #[derive(sqlx::FromRow, Debug)]
@@ -12,6 +14,8 @@ pub struct MessageRow {
     pub timestamp: String, // Store as RFC3339 string
 }
 
+// We panic in the From implementations since normal DB ops will use the right role / timestamp
+// So if we panic, DB is corrupted / inconsistent
 impl From<ArgoChatMessage> for MessageRow {
     fn from(msg: ArgoChatMessage) -> Self {
         let id = Uuid::new_v4().to_string();
@@ -25,6 +29,22 @@ impl From<ArgoChatMessage> for MessageRow {
             role,
             content: msg.message.content,
             timestamp: msg.timestamp.to_rfc3339(),
+        }
+    }
+}
+
+impl From<MessageRow> for ArgoChatMessage {
+    fn from(value: MessageRow) -> Self {
+        let role = serde_json::from_str::<MessageRole>(&value.role)
+            .unwrap_or_else(|e| panic!("failed to deserialize role '{}': {}", value.role, e));
+
+        let timestamp = DateTime::parse_from_rfc3339(&value.timestamp)
+            .unwrap_or_else(|e| panic!("failed to parse timestamp '{}': {}", value.timestamp, e))
+            .with_timezone(&Utc);
+
+        ArgoChatMessage {
+            message: ChatMessage::new(role, value.content),
+            timestamp,
         }
     }
 }
