@@ -1,10 +1,12 @@
 mod chat;
+mod db;
 mod err;
 
 use chat::{ArgoChatMessage, ChatRequest, ChatStreamEvent};
 use chrono::Utc;
 use std::sync::Arc;
 use std::sync::Mutex;
+use tauri::Manager;
 
 use err::ArgoError;
 use ollama_rs::{
@@ -118,6 +120,18 @@ async fn list_models() -> Result<Vec<String>, ArgoError> {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .setup(|app| {
+            let handle = app.handle();
+            let database = tauri::async_runtime::block_on(async move {
+                let database = db::Database::new(&handle)
+                    .await
+                    .expect("Failed to initialise SQLite database");
+                database.pool
+            });
+
+            app.manage(database);
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             chat_request,
             chat_request_stream,
