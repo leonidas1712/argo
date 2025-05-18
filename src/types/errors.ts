@@ -2,7 +2,7 @@ import { notifications } from "@mantine/notifications";
 
 // interface to match error from Tauri
 export interface ArgoError {
-    kind: 'chatError';  // Add more error kinds as they're added to Rust
+    kind: 'chatError' | 'databaseError';  // Add more error kinds as they're added to Rust
     message: string;
 }
 
@@ -20,6 +20,7 @@ export const isArgoError = (err: unknown): err is ArgoError => {
 // Show error notification based on ArgoError (known from Tauri) or other error
 export function showErrorNotification(err: unknown) {
     const autoClose = 5000;
+    console.log("ERR:", err);
     if (isArgoError(err)) {
         notifications.show({
           title: "Error",

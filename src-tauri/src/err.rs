@@ -18,6 +18,9 @@ impl From<tauri::Error> for ArgoError {
 pub enum ArgoError {
     #[error("Chat error: {0}")]
     ChatError(String),
+    // Use #[from] for automatic conversion from sqlx error to DB error with msg
+    #[error("Database error: {0}")]
+    DatabaseError(#[from] sqlx::Error),
 }
 
 /// e.g { kind: chatError, message: "..." }
@@ -26,6 +29,7 @@ pub enum ArgoError {
 #[serde(rename_all = "camelCase")]
 enum ArgoErrorKind {
     ChatError(String),
+    DatabaseError(String),
 }
 
 impl serde::Serialize for ArgoError {
@@ -36,6 +40,7 @@ impl serde::Serialize for ArgoError {
         let err_msg = self.to_string();
         let err_kind = match self {
             Self::ChatError(_) => ArgoErrorKind::ChatError(err_msg),
+            Self::DatabaseError(_) => ArgoErrorKind::DatabaseError(err_msg),
         };
 
         err_kind.serialize(serializer)

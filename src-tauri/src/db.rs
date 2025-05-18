@@ -5,7 +5,7 @@ use sqlx::{Pool, Sqlite, SqlitePool};
 use tauri::{AppHandle, Manager};
 
 /// Database for local data backed by SQLite
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Database {
     pub pool: Pool<Sqlite>,
 }

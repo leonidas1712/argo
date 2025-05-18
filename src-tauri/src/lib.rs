@@ -4,9 +4,11 @@ mod err;
 
 use chat::{ArgoChatMessage, ChatRequest, ChatStreamEvent};
 use chrono::Utc;
+use db::Database;
 use std::sync::Arc;
 use std::sync::Mutex;
 use tauri::Manager;
+use tauri::State;
 
 use err::ArgoError;
 use ollama_rs::{
@@ -58,8 +60,17 @@ async fn chat_request(input: ChatRequest) -> Result<ArgoChatMessage, ArgoError> 
 async fn chat_request_stream(
     input: ChatRequest,
     on_event: Channel<ChatStreamEvent>,
+    db: State<'_, Database>,
 ) -> Result<(), ArgoError> {
     dbg!("input for streaming: {:?}", &input);
+    dbg!("db: {:?}", &db);
+
+    let row: (i64,) = sqlx::query_as("select $1")
+        .bind(150_i64)
+        .fetch_one(&db.pool)
+        .await?;
+
+    dbg!("row: {}", row);
 
     let ollama = Ollama::default();
 
@@ -126,7 +137,7 @@ pub fn run() {
                 let database = db::Database::new(&handle)
                     .await
                     .expect("Failed to initialise SQLite database");
-                database.pool
+                database
             });
 
             app.manage(database);
