@@ -37,4 +37,5 @@ chrono = { version = "0.4.41", features = ["serde"] }
 tokio-stream = "0.1.17"
 sqlx = { version = "0.8.5", features = ["sqlite", "chrono", "macros", "runtime-tokio"] }
 anyhow = "1.0.98"
+uuid = { version = "1.16.0", features = ["v4"] }
 

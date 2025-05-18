@@ -3,6 +3,10 @@
 use chrono::{DateTime, Utc};
 use ollama_rs::generation::chat::ChatMessage;
 use serde::{Deserialize, Serialize};
+use sqlx::SqlitePool;
+use uuid::Uuid;
+
+use crate::err::ArgoError;
 
 /// Argo representation of chat messages, with extra metadata
 #[derive(Serialize, Deserialize, Debug)]
@@ -31,3 +35,62 @@ pub enum ChatStreamEvent {
     Chunk { content: String },
     Done,
 }
+
+// Structs to convert to DB format
+#[derive(sqlx::FromRow, Debug)]
+pub struct MessageRow {
+    pub id: String,
+    pub thread_id: String,
+    pub role: String,
+    pub content: String,
+    pub timestamp: String, // Store as RFC3339 string
+}
+
+impl From<ArgoChatMessage> for MessageRow {
+    fn from(msg: ArgoChatMessage) -> Self {
+        let id = Uuid::new_v4().to_string();
+        let thread_id = String::from("test"); // hardcode to test for now
+        let role =
+            serde_json::to_string(&msg.message.role).expect("failed to serialise message role");
+
+        MessageRow {
+            id,
+            thread_id,
+            role,
+            content: msg.message.content,
+            timestamp: msg.timestamp.to_rfc3339(),
+        }
+    }
+}
+
+pub async fn insert_message(pool: &SqlitePool, msg: &MessageRow) -> Result<(), ArgoError> {
+    sqlx::query(
+        r#"
+        INSERT INTO messages (id, thread_id, role, content, timestamp) 
+        VALUES (?, ?, ?, ?, ?)
+        "#,
+    )
+    .bind(&msg.id)
+    .bind(&msg.thread_id)
+    .bind(&msg.role)
+    .bind(&msg.content)
+    .bind(&msg.timestamp)
+    .execute(pool)
+    .await?;
+
+    Ok(())
+}
+
+// impl From<MessageRow> for ArgoChatMessage {
+//     fn from(row: MessageRow) -> Self {
+//         ArgoChatMessage {
+//             id: row.id,
+//             thread_id: row.thread_id,
+//             role: row.role,
+//             content: row.content,
+//             timestamp: chrono::DateTime::parse_from_rfc3339(&row.timestamp)
+//                 .unwrap()
+//                 .with_timezone(&chrono::Utc),
+//         }
+//     }
+// }
