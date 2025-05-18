@@ -118,14 +118,11 @@ async fn chat_request_stream(
 
     println!("\nEnd of stream");
 
-    // Save user message
+    // Construct user message
     let user_msg = input.last_message;
     let user_msg_row: MessageRow = user_msg.into();
-    insert_message(&db.pool, &user_msg_row).await?;
 
-    dbg!("User msg saved");
-
-    // Save assistant response
+    // Construct assistant message
     let assistant_chat_msg = ChatMessage::new(MessageRole::Assistant, assistant_response);
     let assistant_msg = ArgoChatMessage {
         message: assistant_chat_msg,
@@ -133,9 +130,13 @@ async fn chat_request_stream(
     };
     let assistant_msg_row: MessageRow = assistant_msg.into();
 
-    insert_message(&db.pool, &assistant_msg_row).await?;
+    // Save both msgs in one txn
+    let mut tx = db.pool.begin().await?;
+    insert_message(&mut *tx, &user_msg_row).await?;
+    insert_message(&mut *tx, &assistant_msg_row).await?;
+    tx.commit().await?;
 
-    dbg!("Assistant msg saved");
+    dbg!("User and assistant msg saved");
 
     Ok(())
 }

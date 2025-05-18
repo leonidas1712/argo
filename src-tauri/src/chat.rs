@@ -3,7 +3,7 @@
 use chrono::{DateTime, Utc};
 use ollama_rs::generation::chat::ChatMessage;
 use serde::{Deserialize, Serialize};
-use sqlx::SqlitePool;
+use sqlx::{Executor, Sqlite, SqlitePool};
 use uuid::Uuid;
 
 use crate::err::ArgoError;
@@ -63,7 +63,16 @@ impl From<ArgoChatMessage> for MessageRow {
     }
 }
 
-pub async fn insert_message(pool: &SqlitePool, msg: &MessageRow) -> Result<(), ArgoError> {
+/// Save one MessageRow to DB
+// https://docs.rs/sqlx/latest/sqlx/trait.Executor.html
+// &Pool, &mut Connection impl Executor
+// Transaction and PoolConnection no Executor impls. But we can just deref when passing in
+// &mut transaction -> &mut *transaction
+// &mut connection -> &mut *connection
+pub async fn insert_message<'e, E>(executor: E, msg: &MessageRow) -> Result<(), ArgoError>
+where
+    E: Executor<'e, Database = Sqlite>,
+{
     sqlx::query(
         r#"
         INSERT INTO messages (id, thread_id, role, content, timestamp) 
@@ -75,7 +84,7 @@ pub async fn insert_message(pool: &SqlitePool, msg: &MessageRow) -> Result<(), A
     .bind(&msg.role)
     .bind(&msg.content)
     .bind(&msg.timestamp)
-    .execute(pool)
+    .execute(executor)
     .await?;
 
     Ok(())
