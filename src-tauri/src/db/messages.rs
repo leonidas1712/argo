@@ -30,3 +30,24 @@ where
 
     Ok(())
 }
+
+/// Return list of messages for a thread
+pub async fn get_messages<'e, E>(
+    executor: E,
+    thread_id: String,
+) -> Result<Vec<MessageRow>, ArgoError>
+where
+    E: Executor<'e, Database = Sqlite>,
+{
+    let res = sqlx::query_as::<_, MessageRow>(
+        r#"
+        select * from messages where thread_id = ? order by timestamp asc;
+        "#,
+    )
+    .bind(thread_id)
+    .fetch_all(executor)
+    // .execute(executor)
+    .await?;
+
+    Ok(res)
+}

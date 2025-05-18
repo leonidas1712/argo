@@ -1,5 +1,4 @@
 // Chat commands
-
 use std::sync::{Arc, Mutex};
 
 use chrono::Utc;
@@ -11,7 +10,7 @@ use tauri::State;
 use tokio_stream::StreamExt;
 
 use crate::{
-    db::{insert_message, Database, MessageRow},
+    db::{insert_message, messages::get_messages, Database, MessageRow},
     err::ArgoError,
 };
 
@@ -104,5 +103,16 @@ pub async fn chat_request_stream(
     insert_message(&mut *tx, &assistant_msg_row).await?;
     tx.commit().await?;
 
+    Ok(())
+}
+
+/// Get message history for a thread
+#[tauri::command]
+pub async fn get_message_history(
+    thread_id: String,
+    db: State<'_, Database>,
+) -> Result<(), ArgoError> {
+    let messages = get_messages(&db.pool, thread_id).await?;
+    println!("msgs: {:?}", messages);
     Ok(())
 }

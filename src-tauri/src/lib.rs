@@ -2,7 +2,7 @@ mod chat;
 mod db;
 mod err;
 
-use chat::commands::{chat_request, chat_request_stream};
+use chat::commands::{chat_request, chat_request_stream, get_message_history};
 use tauri::Manager;
 
 /// List available models in Ollama
@@ -33,7 +33,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             chat_request,
             chat_request_stream,
-            list_models
+            list_models,
+            get_message_history
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
