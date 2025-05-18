@@ -9,7 +9,7 @@ use uuid::Uuid;
 use crate::err::ArgoError;
 
 /// Argo representation of chat messages, with extra metadata
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ArgoChatMessage {
     pub message: ChatMessage,
     /// Input from frontend is ISO 8601 string
