@@ -38,6 +38,10 @@ impl Database {
 
         let pool = SqlitePool::connect_with(conn_options).await?;
 
+        // Run migrations regardless of whether the database is new
+        // SQLx will track which migrations have been run
+        sqlx::migrate!("./migrations").run(&pool).await?;
+
         Ok(Database { pool })
     }
 }
