@@ -2,14 +2,18 @@ import {
   Container,
   Stack,
   AppShell,
-  Burger,
   Group,
   Text,
   Box,
   useMantineColorScheme,
+  ActionIcon,
 } from "@mantine/core";
 import { ReactNode } from "react";
 import { useDisclosure } from "@mantine/hooks";
+import {
+  IconLayoutSidebarRightExpand,
+  IconLayoutSidebarLeftExpand,
+} from "@tabler/icons-react";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -19,6 +23,9 @@ export default function MainLayout({ children }: MainLayoutProps) {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(false);
   const { colorScheme } = useMantineColorScheme();
+
+  const sidebarIconColor =
+    colorScheme === "dark" ? "rgba(170, 170, 170, 1)" : "black";
 
   return (
     <AppShell
@@ -34,21 +41,35 @@ export default function MainLayout({ children }: MainLayoutProps) {
         <Group h="100%" px="md" justify="space-between">
           <Group>
             {/* only visible on mobile */}
-            <Burger
-              opened={mobileOpened}
+            <ActionIcon
               onClick={toggleMobile}
               hiddenFrom="sm"
-              size="sm"
+              size="lg"
               aria-label="Open sidebar"
-            />
+              variant="transparent"
+              color={sidebarIconColor}
+            >
+              {mobileOpened ? (
+                <IconLayoutSidebarRightExpand size={20} />
+              ) : (
+                <IconLayoutSidebarLeftExpand size={20} />
+              )}
+            </ActionIcon>
             {/* only visible on > sm (desktop) */}
-            <Burger
-              opened={desktopOpened}
+            <ActionIcon
               onClick={toggleDesktop}
               visibleFrom="sm"
-              size="sm"
+              size="lg"
               aria-label="Collapse sidebar"
-            />
+              variant="transparent"
+              color={sidebarIconColor}
+            >
+              {desktopOpened ? (
+                <IconLayoutSidebarRightExpand size={20} />
+              ) : (
+                <IconLayoutSidebarLeftExpand size={20} />
+              )}
+            </ActionIcon>
           </Group>
         </Group>
       </AppShell.Header>
