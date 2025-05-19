@@ -10,7 +10,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <MainLayout>
-        <Chat />
+        <Chat threadId="test" />
       </MainLayout>
     </QueryClientProvider>
   );

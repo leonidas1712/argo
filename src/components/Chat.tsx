@@ -7,8 +7,12 @@ import { ArgoChatMessage } from "../types/commands";
 import { useInitialChat } from "../hooks/useChat";
 import { showErrorNotification } from "../types/errors";
 
+interface ChatProps {
+  threadId: string;
+}
+
 // Main component for one chat session
-function Chat() {
+function Chat({ threadId }: ChatProps) {
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState<ArgoChatMessage[]>([]);
   const [streamContent, setStreamContent] = useState("");
@@ -18,7 +22,7 @@ function Chat() {
     data: initialMessages,
     isLoading: initialChatStateLoading,
     error,
-  } = useInitialChat();
+  } = useInitialChat(threadId);
 
   useEffect(() => {
     console.log("Chat useEff, init msgs", initialMessages);
