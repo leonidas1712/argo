@@ -4,5 +4,5 @@ INSERT OR IGNORE INTO threads (id, name, created_at)
 VALUES (
     'test',  -- Using a fixed UUID for test thread
     'Test Thread',
-    '2025-05-18 10:45:49'
+    '2025-05-18T10:45:49Z'
 );

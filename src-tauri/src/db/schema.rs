@@ -60,7 +60,12 @@ impl From<MessageRow> for ArgoChatMessage {
 
 impl From<ThreadRow> for Thread {
     fn from(value: ThreadRow) -> Self {
+        // Try RFC3339 first, then fall back to simple datetime format
         let created_at = DateTime::parse_from_rfc3339(&value.created_at)
+            .or_else(|_| {
+                // Try parsing as simple datetime format
+                DateTime::parse_from_str(&value.created_at, "%Y-%m-%d %H:%M:%S")
+            })
             .unwrap_or_else(|e| panic!("failed to parse timestamp '{}': {}", value.created_at, e))
             .with_timezone(&Utc);
 

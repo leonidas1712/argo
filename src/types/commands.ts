@@ -1,5 +1,12 @@
 import { invoke, Channel } from '@tauri-apps/api/core';
 
+export interface Thread {
+    id: string;
+    name: string;
+    // ISO 8601 format
+    created_at: string;
+}
+
 export interface ChatMessage {
     role: "user" | "assistant" | "system" | "tool";
     content: string;
@@ -44,6 +51,11 @@ export async function sendChatRequestStream(
 // Get list of models available in Ollama
 export async function listModels(): Promise<string[]> {
     return invoke('list_models');
+}
+
+// Get list of threads
+export async function getThreadList(): Promise<Thread[]> {
+    return invoke('get_thread_list');
 }
 
 // Get message history for a thread

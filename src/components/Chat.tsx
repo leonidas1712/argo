@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Flex, Stack } from "@mantine/core";
+import { Button, Flex, Stack } from "@mantine/core";
 import MessageList from "./MessageList";
 import ChatInput from "./ChatInput";
 import ColorSchemeToggle from "./ColorSchemeToggle";
-import { ArgoChatMessage } from "../types/commands";
+import { ArgoChatMessage, getThreadList } from "../types/commands";
 import { useInitialChat } from "../hooks/useChat";
 import { showErrorNotification } from "../types/errors";
 
@@ -35,10 +35,16 @@ function Chat({ threadId }: ChatProps) {
     showErrorNotification(error);
   }
 
+  const click = async () => {
+    const res = await getThreadList();
+    console.log("Threads:", res);
+  };
+
   return (
     <>
       <MessageList history={history} streamContent={streamContent} />
 
+      <Button onClick={click}>Test</Button>
       <Stack gap="md" align="center">
         <ChatInput
           loading={loading || initialChatStateLoading}

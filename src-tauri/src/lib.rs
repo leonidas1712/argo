@@ -2,7 +2,7 @@ mod chat;
 mod db;
 mod err;
 
-use chat::commands::{chat_request, chat_request_stream, get_message_history};
+use chat::commands::{chat_request, chat_request_stream, get_message_history, get_thread_list};
 use tauri::Manager;
 
 /// List available models in Ollama
@@ -34,6 +34,7 @@ pub fn run() {
             chat_request,
             chat_request_stream,
             list_models,
+            get_thread_list,
             get_message_history
         ])
         .run(tauri::generate_context!())
