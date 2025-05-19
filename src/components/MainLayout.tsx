@@ -33,6 +33,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
       <AppShell.Header>
         <Group h="100%" px="md" justify="space-between">
           <Group>
+            {/* only visible on mobile */}
             <Burger
               opened={mobileOpened}
               onClick={toggleMobile}
@@ -40,6 +41,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
               size="sm"
               aria-label="Open sidebar"
             />
+            {/* only visible on > sm (desktop) */}
             <Burger
               opened={desktopOpened}
               onClick={toggleDesktop}
@@ -50,6 +52,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
           </Group>
         </Group>
       </AppShell.Header>
+
       <AppShell.Navbar p="md">
         <Stack>
           <Box
@@ -67,8 +70,9 @@ export default function MainLayout({ children }: MainLayoutProps) {
           </Text>
         </Stack>
       </AppShell.Navbar>
+
       <AppShell.Main h="100dvh" style={{ overflow: "hidden" }}>
-        <Container size="md" py="xl" h="100%" style={{ overflow: "hidden" }}>
+        <Container size="lg" py="xl" h="100%" style={{ overflow: "hidden" }}>
           <Stack h="100%" justify="space-between">
             {children}
           </Stack>
