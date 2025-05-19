@@ -4,7 +4,7 @@ import { IconMoon, IconSun } from "@tabler/icons-react";
 function ColorSchemeToggle() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 
-  const size = 22;
+  const size = 18;
 
   return (
     <Tooltip label="Toggle color scheme" position="left">

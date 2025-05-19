@@ -14,6 +14,7 @@ import {
   IconLayoutSidebarRightExpand,
   IconLayoutSidebarLeftExpand,
 } from "@tabler/icons-react";
+import ColorSchemeToggle from "./ColorSchemeToggle";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -42,7 +43,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
       padding={0}
     >
       <AppShell.Header>
-        <Group h="100%" px="md" justify="space-between">
+        <Group h="100%" px="xs" justify="flex-start">
           <ActionIcon
             onClick={toggleSidebar}
             size="lg"
@@ -56,6 +57,8 @@ export default function MainLayout({ children }: MainLayoutProps) {
               <IconLayoutSidebarLeftExpand size={20} />
             )}
           </ActionIcon>
+
+          <ColorSchemeToggle />
         </Group>
       </AppShell.Header>
 

@@ -37,9 +37,9 @@ function Chat({ threadId }: ChatProps) {
 
   return (
     <>
-      <Flex justify="flex-end">
+      {/* <Flex justify="flex-end">
         <ColorSchemeToggle />
-      </Flex>
+      </Flex> */}
 
       <MessageList history={history} streamContent={streamContent} />
 
