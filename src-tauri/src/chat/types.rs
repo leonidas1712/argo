@@ -4,6 +4,14 @@ use chrono::{DateTime, Utc};
 use ollama_rs::generation::chat::ChatMessage;
 use serde::{Deserialize, Serialize};
 
+/// Represents a chat thread
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Thread {
+    pub id: String,
+    pub name: String,
+    pub created_at: DateTime<Utc>,
+}
+
 /// Argo representation of chat messages, with extra metadata
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ArgoChatMessage {

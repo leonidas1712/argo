@@ -1,7 +1,8 @@
 // Functions for read/write of messages to DB
 
-use super::schema::MessageRow;
+use crate::db::schema::{MessageRow, ThreadRow};
 use crate::err::ArgoError;
+use sqlx::SqlitePool;
 use sqlx::{Executor, Sqlite};
 
 /// Save one MessageRow to DB
@@ -50,4 +51,13 @@ where
     .await?;
 
     Ok(res)
+}
+
+/// Get all threads from the database
+pub async fn get_threads(pool: &SqlitePool) -> Result<Vec<ThreadRow>, sqlx::Error> {
+    let threads = sqlx::query_as::<_, ThreadRow>("SELECT * FROM threads ORDER BY created_at DESC")
+        .fetch_all(pool)
+        .await?;
+
+    Ok(threads)
 }

@@ -10,11 +10,15 @@ use tauri::State;
 use tokio_stream::StreamExt;
 
 use crate::{
-    db::{insert_message, messages::get_messages, Database, MessageRow},
+    db::{
+        insert_message,
+        messages::{get_messages, get_threads},
+        Database, MessageRow,
+    },
     err::ArgoError,
 };
 
-use super::types::{ArgoChatMessage, ChatRequest, ChatStreamEvent};
+use super::types::{ArgoChatMessage, ChatRequest, ChatStreamEvent, Thread};
 
 /// Chat request without streaming
 #[tauri::command]
@@ -122,4 +126,12 @@ pub async fn get_message_history(
     dbg!("msgs argo: {:?}", &messages);
 
     Ok(messages)
+}
+
+/// Get list of all threads
+#[tauri::command]
+pub async fn get_thread_list(db: State<'_, Database>) -> Result<Vec<Thread>, ArgoError> {
+    let thread_rows = get_threads(&db.pool).await?;
+    let threads: Vec<Thread> = thread_rows.into_iter().map(|t| t.into()).collect();
+    Ok(threads)
 }
