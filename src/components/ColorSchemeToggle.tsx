@@ -1,7 +1,7 @@
 import { ActionIcon, Tooltip, useMantineColorScheme } from "@mantine/core";
 import { IconMoon, IconSun } from "@tabler/icons-react";
 
-function ColorSchemeToggle() {
+function ColorSchemeToggle({ color }: { color?: string }) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 
   const size = 18;
@@ -13,11 +13,12 @@ function ColorSchemeToggle() {
         size="md"
         aria-label="Toggle color scheme"
         onClick={toggleColorScheme}
+        color={color}
       >
         {colorScheme === "dark" ? (
-          <IconMoon size={size} />
+          <IconMoon size={size} color={color} />
         ) : (
-          <IconSun size={size} />
+          <IconSun size={size} color={color} />
         )}
       </ActionIcon>
     </Tooltip>

@@ -20,6 +20,35 @@ interface MainLayoutProps {
   children: ReactNode;
 }
 
+function AppHeader({
+  sidebarOpened,
+  toggleSidebar,
+  sidebarIconColor,
+}: {
+  sidebarOpened: boolean;
+  toggleSidebar: () => void;
+  sidebarIconColor: string;
+}) {
+  return (
+    <Group h="100%" px="xs" justify="flex-start">
+      <ActionIcon
+        onClick={toggleSidebar}
+        size="lg"
+        aria-label={sidebarOpened ? "Collapse sidebar" : "Open sidebar"}
+        variant="transparent"
+        color={sidebarIconColor}
+      >
+        {sidebarOpened ? (
+          <IconLayoutSidebarRightExpand size={20} color={sidebarIconColor} />
+        ) : (
+          <IconLayoutSidebarLeftExpand size={20} color={sidebarIconColor} />
+        )}
+      </ActionIcon>
+      <ColorSchemeToggle color={sidebarIconColor} />
+    </Group>
+  );
+}
+
 export default function MainLayout({ children }: MainLayoutProps) {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(false);
@@ -43,23 +72,11 @@ export default function MainLayout({ children }: MainLayoutProps) {
       padding={0}
     >
       <AppShell.Header>
-        <Group h="100%" px="xs" justify="flex-start">
-          <ActionIcon
-            onClick={toggleSidebar}
-            size="lg"
-            aria-label={sidebarOpened ? "Collapse sidebar" : "Open sidebar"}
-            variant="transparent"
-            color={sidebarIconColor}
-          >
-            {sidebarOpened ? (
-              <IconLayoutSidebarRightExpand size={20} />
-            ) : (
-              <IconLayoutSidebarLeftExpand size={20} />
-            )}
-          </ActionIcon>
-
-          <ColorSchemeToggle />
-        </Group>
+        <AppHeader
+          sidebarOpened={sidebarOpened}
+          toggleSidebar={toggleSidebar}
+          sidebarIconColor={sidebarIconColor}
+        />
       </AppShell.Header>
 
       <AppShell.Navbar p="md">
