@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { IconSend } from "@tabler/icons-react";
-import { ArgoChatMessage, ChatMessage } from "../types/commands";
+import { ArgoChatMessage, ChatMessage } from "../service/types";
 import { useModels } from "../hooks/useModels";
 import { useChatMutation } from "../hooks/useChatMutation";
 

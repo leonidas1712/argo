@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { listModels } from "../types/commands";
+import { listModels } from "../service/commands";
 
 export function useModels() {
     return useQuery({

@@ -1,6 +1,6 @@
 import { Stack, ScrollArea } from "@mantine/core";
 import { useEffect, useRef } from "react";
-import { ArgoChatMessage } from "../types/commands";
+import { ArgoChatMessage } from "../service/types";
 import { formatTimestamp } from "../utils/formatTimestamp";
 import UserMessage from "./UserMessage";
 import AIMessage from "./AIMessage";

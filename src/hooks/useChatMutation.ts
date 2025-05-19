@@ -5,9 +5,11 @@ import {
   ChatRequestParams, 
   ArgoChatMessage,
   ChatMessage,
-  sendChatRequestStream 
-} from "../types/commands";
-import { showErrorNotification } from "../types/errors";
+   
+} from "../service/types";
+
+import { showErrorNotification } from "../service/errors";
+import { sendChatRequestStream } from "../service/commands";
 
 interface ChatMutationParams {
   // params for chat_request_stream

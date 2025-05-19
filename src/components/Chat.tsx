@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { Button, Flex, Stack } from "@mantine/core";
+import { Button, Stack } from "@mantine/core";
 import MessageList from "./MessageList";
 import ChatInput from "./ChatInput";
-import ColorSchemeToggle from "./ColorSchemeToggle";
-import { ArgoChatMessage, getThreadList } from "../types/commands";
+import { ArgoChatMessage } from "../service/types";
+import { getThreadList } from "../service/commands";
 import { useInitialChat } from "../hooks/useChat";
-import { showErrorNotification } from "../types/errors";
+import { showErrorNotification } from "../service/errors";
 
 interface ChatProps {
   threadId: string;
