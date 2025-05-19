@@ -6,6 +6,7 @@ import {
   Group,
   Text,
   Box,
+  useMantineColorScheme,
 } from "@mantine/core";
 import { ReactNode } from "react";
 import { useDisclosure } from "@mantine/hooks";
@@ -16,13 +17,14 @@ interface MainLayoutProps {
 
 export default function MainLayout({ children }: MainLayoutProps) {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
-  const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+  const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(false);
+  const { colorScheme } = useMantineColorScheme();
 
   return (
     <AppShell
-      header={{ height: 56 }}
+      header={{ height: 40 }}
       navbar={{
-        width: 260,
+        width: 180,
         breakpoint: "sm",
         collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
       }}
@@ -45,20 +47,22 @@ export default function MainLayout({ children }: MainLayoutProps) {
               size="sm"
               aria-label="Collapse sidebar"
             />
-            <Text fw={700} size="lg" c="white">
-              Threads
-            </Text>
           </Group>
         </Group>
       </AppShell.Header>
-      <AppShell.Navbar p="md" style={{ background: "#232323" }}>
+      <AppShell.Navbar p="md">
         <Stack>
-          <Box bg="#333" p="md" style={{ borderRadius: 12 }} mb="xs">
-            <Text c="white" size="md">
-              My Name Is Jef
-            </Text>
+          <Box
+            p="xs"
+            style={{
+              borderRadius: 10,
+              background: colorScheme === "dark" ? "#333" : "#f1f3f5",
+            }}
+          >
+            <Text size="sm">My Name Is Jef</Text>
           </Box>
-          <Text c="white" size="md" pl="xs">
+
+          <Text size="sm" pl="xs">
             New Thread
           </Text>
         </Stack>
