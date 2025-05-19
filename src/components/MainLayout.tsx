@@ -9,7 +9,7 @@ import {
   ActionIcon,
 } from "@mantine/core";
 import { ReactNode } from "react";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import {
   IconLayoutSidebarRightExpand,
   IconLayoutSidebarLeftExpand,
@@ -23,9 +23,13 @@ export default function MainLayout({ children }: MainLayoutProps) {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(false);
   const { colorScheme } = useMantineColorScheme();
+  const isDesktop = useMediaQuery("(min-width: 48em)"); // Mantine's 'sm' breakpoint
 
   const sidebarIconColor =
     colorScheme === "dark" ? "rgba(170, 170, 170, 1)" : "black";
+
+  const sidebarOpened = isDesktop ? desktopOpened : mobileOpened;
+  const toggleSidebar = isDesktop ? toggleDesktop : toggleMobile;
 
   return (
     <AppShell
@@ -39,38 +43,19 @@ export default function MainLayout({ children }: MainLayoutProps) {
     >
       <AppShell.Header>
         <Group h="100%" px="md" justify="space-between">
-          <Group>
-            {/* only visible on mobile */}
-            <ActionIcon
-              onClick={toggleMobile}
-              hiddenFrom="sm"
-              size="lg"
-              aria-label="Open sidebar"
-              variant="transparent"
-              color={sidebarIconColor}
-            >
-              {mobileOpened ? (
-                <IconLayoutSidebarRightExpand size={20} />
-              ) : (
-                <IconLayoutSidebarLeftExpand size={20} />
-              )}
-            </ActionIcon>
-            {/* only visible on > sm (desktop) */}
-            <ActionIcon
-              onClick={toggleDesktop}
-              visibleFrom="sm"
-              size="lg"
-              aria-label="Collapse sidebar"
-              variant="transparent"
-              color={sidebarIconColor}
-            >
-              {desktopOpened ? (
-                <IconLayoutSidebarRightExpand size={20} />
-              ) : (
-                <IconLayoutSidebarLeftExpand size={20} />
-              )}
-            </ActionIcon>
-          </Group>
+          <ActionIcon
+            onClick={toggleSidebar}
+            size="lg"
+            aria-label={sidebarOpened ? "Collapse sidebar" : "Open sidebar"}
+            variant="transparent"
+            color={sidebarIconColor}
+          >
+            {sidebarOpened ? (
+              <IconLayoutSidebarRightExpand size={20} />
+            ) : (
+              <IconLayoutSidebarLeftExpand size={20} />
+            )}
+          </ActionIcon>
         </Group>
       </AppShell.Header>
 
