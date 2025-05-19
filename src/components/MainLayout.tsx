@@ -7,6 +7,7 @@ import {
   Box,
   useMantineColorScheme,
   ActionIcon,
+  Tooltip,
 } from "@mantine/core";
 import { ReactNode } from "react";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
@@ -29,21 +30,26 @@ function AppHeader({
   toggleSidebar: () => void;
   sidebarIconColor: string;
 }) {
+  const toolTipLabel = sidebarOpened
+    ? "Hide chat threads"
+    : "Show chat threads";
   return (
     <Group h="100%" px="xs" justify="flex-start">
-      <ActionIcon
-        onClick={toggleSidebar}
-        size="lg"
-        aria-label={sidebarOpened ? "Collapse sidebar" : "Open sidebar"}
-        variant="transparent"
-        color={sidebarIconColor}
-      >
-        {sidebarOpened ? (
-          <IconLayoutSidebarRightExpand size={20} color={sidebarIconColor} />
-        ) : (
-          <IconLayoutSidebarLeftExpand size={20} color={sidebarIconColor} />
-        )}
-      </ActionIcon>
+      <Tooltip label={toolTipLabel} position="bottom">
+        <ActionIcon
+          onClick={toggleSidebar}
+          size="lg"
+          aria-label={sidebarOpened ? "Collapse sidebar" : "Open sidebar"}
+          variant="transparent"
+          color={sidebarIconColor}
+        >
+          {sidebarOpened ? (
+            <IconLayoutSidebarRightExpand size={20} color={sidebarIconColor} />
+          ) : (
+            <IconLayoutSidebarLeftExpand size={20} color={sidebarIconColor} />
+          )}
+        </ActionIcon>
+      </Tooltip>
       <ColorSchemeToggle color={sidebarIconColor} />
     </Group>
   );
