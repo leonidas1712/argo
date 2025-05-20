@@ -5,20 +5,25 @@ import {
   Text,
   Box,
   useMantineColorScheme,
+  Button,
 } from "@mantine/core";
 import { ReactNode } from "react";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import AppHeader from "./AppHeader";
+import { useCurrentThread } from "../contexts/ThreadContext";
+import { Thread } from "../service/types";
 
 interface MainLayoutProps {
   children: ReactNode;
+  threads: Thread[];
 }
 
-export default function MainLayout({ children }: MainLayoutProps) {
+export default function MainLayout({ children, threads }: MainLayoutProps) {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(false);
   const { colorScheme } = useMantineColorScheme();
   const isDesktop = useMediaQuery("(min-width: 48em)"); // Mantine's 'sm' breakpoint
+  const { currentThreadId, setCurrentThreadId } = useCurrentThread();
 
   const sidebarIconColor =
     colorScheme === "dark" ? "rgba(170, 170, 170, 1)" : "black";
@@ -46,19 +51,27 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
       <AppShell.Navbar p="md">
         <Stack>
-          <Box
-            p="xs"
-            style={{
-              borderRadius: 10,
-              background: colorScheme === "dark" ? "#333" : "#f1f3f5",
-            }}
+          <Button
+            variant="light"
+            onClick={() => setCurrentThreadId(null)}
+            fullWidth
           >
-            <Text size="sm">My Name Is Jef</Text>
-          </Box>
-
-          <Text size="sm" pl="xs">
             New Thread
-          </Text>
+          </Button>
+
+          <Stack gap="xs">
+            {threads.map((thread) => (
+              <Button
+                key={thread.id}
+                variant={currentThreadId === thread.id ? "filled" : "subtle"}
+                onClick={() => setCurrentThreadId(thread.id)}
+                fullWidth
+                justify="flex-start"
+              >
+                {thread.name}
+              </Button>
+            ))}
+          </Stack>
         </Stack>
       </AppShell.Navbar>
 

@@ -27,6 +27,7 @@ export async function listModels(): Promise<string[]> {
 
 // Get list of threads
 export async function getThreadList(): Promise<Thread[]> {
+    console.log("Get thread list invoked");
     return invoke('get_thread_list');
 }
 

@@ -13,6 +13,7 @@ import { IconSend } from "@tabler/icons-react";
 import { ArgoChatMessage, ChatMessage } from "../service/types";
 import { useModels } from "../hooks/useModels";
 import { useChatMutation } from "../hooks/useChatMutation";
+import { useCurrentThread } from "../contexts/ThreadContext";
 
 interface ChatInputProps {
   // to disable sending while a response is loading
@@ -31,6 +32,7 @@ function ChatInput(props: ChatInputProps) {
   const { loading, setLoading, history, setHistory, setStreamContent } = props;
   const [input, setInput] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const { currentThreadId } = useCurrentThread();
 
   const { data: modelOptions } = useModels();
   const [selectedModel, setSelectedModel] = useState("");
@@ -69,7 +71,8 @@ function ChatInput(props: ChatInputProps) {
       // mutateAsync lets us await the promise and catch error sequentially
       await chatMutation.mutateAsync({
         params: {
-          thread_id: null,
+          // if thread id null, creates a new thread.
+          thread_id: currentThreadId,
           model: selectedModel,
           history,
           last_message,

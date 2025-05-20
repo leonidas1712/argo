@@ -3,15 +3,33 @@ import "./styles/global.css";
 import MainLayout from "./components/MainLayout";
 import Chat from "./components/Chat";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThreadProvider } from "./contexts/ThreadContext";
+import { useThreads } from "./hooks/useThreads";
+import { useCurrentThread } from "./contexts/ThreadContext";
 
 const queryClient = new QueryClient();
+
+function AppContent() {
+  const { data: threads } = useThreads();
+  const { currentThreadId } = useCurrentThread();
+
+  return (
+    <MainLayout threads={threads || []}>
+      {currentThreadId ? (
+        <Chat threadId={currentThreadId} />
+      ) : (
+        <div>Select a thread or create a new one to start chatting</div>
+      )}
+    </MainLayout>
+  );
+}
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <MainLayout>
-        <Chat threadId="test" />
-      </MainLayout>
+      <ThreadProvider>
+        <AppContent />
+      </ThreadProvider>
     </QueryClientProvider>
   );
 }
