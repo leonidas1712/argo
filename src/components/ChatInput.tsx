@@ -32,7 +32,7 @@ function ChatInput(props: ChatInputProps) {
   const { loading, setLoading, history, setHistory, setStreamContent } = props;
   const [input, setInput] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-  const { currentThreadId } = useCurrentThread();
+  const { currentThreadId, setCurrentThreadId } = useCurrentThread();
 
   const { data: modelOptions } = useModels();
   const [selectedModel, setSelectedModel] = useState("");
@@ -82,9 +82,13 @@ function ChatInput(props: ChatInputProps) {
           setStreamContent((prev) => prev + content);
         },
         // done: add AI response to history and clear streaming content
-        onComplete: (responseMsg) => {
+        onDone: (responseMsg) => {
           setHistory((prev) => [...prev, responseMsg]);
           setStreamContent("");
+        },
+        onSuccess: (newThreadId: string) => {
+          console.log("Setting new thread id:", newThreadId);
+          setCurrentThreadId(newThreadId);
         },
       });
     } catch (error) {

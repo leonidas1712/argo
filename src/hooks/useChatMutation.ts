@@ -17,7 +17,9 @@ interface ChatMutationParams {
   // callback to run when a chunk with content is received
   onChunk: (content: string) => void;
   // callback to run when streaming is done
-  onComplete: (message: ArgoChatMessage) => void;
+  onDone: (message: ArgoChatMessage) => void;
+  // callback to run when whole request is done without error (set thread id)
+  onSuccess: (newThreadId: string) => void;
 }
 
 // Mutation to request with chat history and get AI response
@@ -25,7 +27,7 @@ export function useChatMutation() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ params, onChunk, onComplete }: ChatMutationParams) => {
+    mutationFn: async ({ params, onChunk, onDone }: ChatMutationParams) => {
       const onEvent = new Channel<ChatStreamEvent>();
       const buffer: string[] = [];
 
@@ -46,22 +48,22 @@ export function useChatMutation() {
               timestamp: new Date().toISOString(),
             };
 
-            onComplete(responseArgoMsg);
+            onDone(responseArgoMsg);
             break;
         }
       };
 
-      await sendChatRequestStream(params, onEvent);
+      const id = await sendChatRequestStream(params, onEvent);
+      console.log("Received id from route:", id);
+      return id;
     },
-    onSuccess: async(data, variables) => {
+    onSuccess: async(newThreadId, variables) => {
       if (variables.params.thread_id === null) {
-        console.log("Invalidating threads")
+        console.log("Invalidating threads and setting id")
         await queryClient.invalidateQueries({ queryKey: ['threads'] });
+        variables.onSuccess(newThreadId);
       }
     },
-    // onSuccess: ({ variables }) => {
-    //   queryClient.invalidateQueries({ queryKey: ['threads'] });
-    // },
     onError: (error: Error) => {
       showErrorNotification(error);
     },

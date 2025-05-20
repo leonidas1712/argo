@@ -13,7 +13,7 @@ export async function sendChatRequest(params: ChatRequestParams): Promise<ArgoCh
 export async function sendChatRequestStream(
     params: ChatRequestParams,
     onEvent: Channel<ChatStreamEvent>
-): Promise<void> {
+): Promise<string> {
     return invoke('chat_request_stream', {
         input: params,
         onEvent
@@ -37,7 +37,7 @@ export async function getMessageHistory(threadId: string | null): Promise<ArgoCh
     if (threadId === null) {
         return [];
     }
-    
+
     return invoke('get_message_history', {
         threadId
     });

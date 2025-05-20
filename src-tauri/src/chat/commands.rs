@@ -50,13 +50,13 @@ pub async fn chat_request(input: ChatRequest) -> Result<ArgoChatMessage, ArgoErr
     Ok(argo_msg)
 }
 
-/// Chat request with streaming
+/// Chat request with streaming. Returns thread id: either new if no thread existed for this request or the same one
 #[tauri::command]
 pub async fn chat_request_stream(
     input: ChatRequest,
     on_event: tauri::ipc::Channel<ChatStreamEvent>,
     db: State<'_, Database>,
-) -> Result<(), ArgoError> {
+) -> Result<String, ArgoError> {
     let ollama = Ollama::default();
     let model = String::from(input.model);
 
@@ -122,7 +122,7 @@ pub async fn chat_request_stream(
     insert_message(&mut *tx, &assistant_msg_row).await?;
     tx.commit().await?;
 
-    Ok(())
+    Ok(thread_id)
 }
 
 /// Get message history for a thread
