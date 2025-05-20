@@ -3,7 +3,6 @@ import {
   Stack,
   AppShell,
   Text,
-  Box,
   useMantineColorScheme,
   Button,
 } from "@mantine/core";

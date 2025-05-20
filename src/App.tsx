@@ -16,11 +16,6 @@ function AppContent() {
   return (
     <MainLayout threads={threads || []}>
       <Chat threadId={currentThreadId} />
-      {/* {currentThreadId ? (
-        <Chat threadId={currentThreadId} />
-      ) : (
-        <div>Select a thread or create a new one to start chatting</div>
-      )} */}
     </MainLayout>
   );
 }

@@ -130,7 +130,7 @@ function ChatInput(props: ChatInputProps) {
         >
           <Textarea
             variant="unstyled"
-            placeholder="Ask me anything"
+            placeholder="Ask anything"
             value={input}
             onChange={(e) => setInput(e.currentTarget.value)}
             minRows={2}

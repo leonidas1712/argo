@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Stack } from "@mantine/core";
+import { Center, Stack, Title } from "@mantine/core";
 import MessageList from "./MessageList";
 import ChatInput from "./ChatInput";
 import { ArgoChatMessage } from "../service/types";
@@ -38,7 +38,28 @@ function Chat({ threadId }: ChatProps) {
     <>
       <MessageList history={history} streamContent={streamContent} />
 
+      {/* Title to show when no msgs or streaming */}
+      {history.length === 0 && !streamContent ? (
+        <Center>
+          <Title order={3} fw={500}>
+            {" "}
+            What's on your mind?
+          </Title>
+        </Center>
+      ) : (
+        <></>
+      )}
+
       <Stack gap="md" align="center">
+        {/* {history.length === 0 && !streamContent ? (
+          <Center>
+            <Text size="xl" fw={500} mb="md">
+              What's on your mind?
+            </Text>
+          </Center>
+        ) : (
+          <></>
+        )} */}
         <ChatInput
           loading={loading || initialChatStateLoading}
           setLoading={setLoading}
