@@ -23,6 +23,7 @@ export type ChatStreamEvent =
 
 // Chat request input
 export interface ChatRequestParams {
+    thread_id: string | null;
     model: string;
     history: ArgoChatMessage[];
     last_message: ArgoChatMessage;

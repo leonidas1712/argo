@@ -69,6 +69,7 @@ function ChatInput(props: ChatInputProps) {
       // mutateAsync lets us await the promise and catch error sequentially
       await chatMutation.mutateAsync({
         params: {
+          thread_id: null,
           model: selectedModel,
           history,
           last_message,

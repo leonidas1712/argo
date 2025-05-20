@@ -23,6 +23,8 @@ pub struct ArgoChatMessage {
 /// Chat request from the frontend
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ChatRequest {
+    /// uuid thread ID (optional - no id means new chat request we must make an id for)
+    pub thread_id: Option<String>,
     /// Model name
     pub model: String,
     /// History before and excluding the most recent message

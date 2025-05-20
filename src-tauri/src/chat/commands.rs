@@ -59,7 +59,14 @@ pub async fn chat_request_stream(
 ) -> Result<(), ArgoError> {
     let ollama = Ollama::default();
     let model = String::from(input.model);
+
     let prompt = String::from("Your name is Argo. Respond concisely to the user's requests.");
+
+    if let Some(id) = input.thread_id {
+        dbg!("got an id: {}", id);
+    } else {
+        dbg!("thread id was None");
+    }
 
     let mut history: Vec<ChatMessage> = vec![ChatMessage::system(prompt)];
     history.extend(
