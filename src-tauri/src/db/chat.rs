@@ -1,4 +1,4 @@
-// Functions for read/write of messages to DB
+// Functions for read/write of chat data to DB
 
 use crate::db::schema::{MessageRow, ThreadRow};
 use crate::err::ArgoError;
@@ -60,4 +60,31 @@ pub async fn get_threads(pool: &SqlitePool) -> Result<Vec<ThreadRow>, sqlx::Erro
         .await?;
 
     Ok(threads)
+}
+
+/// Insert new thread with the desird name and return result
+pub async fn insert_new_thread(
+    pool: &SqlitePool,
+    thread_name: String,
+) -> Result<ThreadRow, sqlx::Error> {
+    let thread_id = uuid::Uuid::new_v4().to_string();
+    // ISO8601 format for easy conversion in JS side
+    let created_at = chrono::Utc::now().to_rfc3339();
+
+    let thread = sqlx::query_as::<_, ThreadRow>(
+        r#"
+        INSERT INTO threads (id, name, created_at)
+        VALUES ($1, $2, $3)
+        RETURNING id, name, created_at
+        "#,
+    )
+    .bind(thread_id)
+    .bind(thread_name)
+    .bind(created_at)
+    .fetch_one(pool)
+    .await?;
+
+    dbg!("new thread made: {:?}", &thread);
+
+    Ok(thread)
 }

@@ -11,7 +11,7 @@ use tokio_stream::StreamExt;
 
 use crate::{
     db::{
-        chat::{get_messages, get_threads},
+        chat::{get_messages, get_threads, insert_new_thread},
         insert_message, Database, MessageRow,
     },
     err::ArgoError,
@@ -65,6 +65,7 @@ pub async fn chat_request_stream(
         dbg!("got an id: {}", id);
     } else {
         dbg!("thread id was None");
+        let new_thread = insert_new_thread(&db.pool, String::from("Test thread")).await?;
     }
 
     let mut history: Vec<ChatMessage> = vec![ChatMessage::system(prompt)];
