@@ -11,9 +11,8 @@ use tokio_stream::StreamExt;
 
 use crate::{
     db::{
-        insert_message,
-        messages::{get_messages, get_threads},
-        Database, MessageRow,
+        chat::{get_messages, get_threads},
+        insert_message, Database, MessageRow,
     },
     err::ArgoError,
 };
