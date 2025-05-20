@@ -51,26 +51,32 @@ export default function MainLayout({ children, threads }: MainLayoutProps) {
 
       <AppShell.Navbar p="md">
         <Stack>
-          <Button
+          {/* <Button
             variant="light"
             onClick={() => setCurrentThreadId(null)}
             fullWidth
           >
             New Thread
-          </Button>
+          </Button> */}
 
           <Stack gap="xs">
-            {threads.map((thread) => (
-              <Button
-                key={thread.id}
-                variant={currentThreadId === thread.id ? "filled" : "subtle"}
-                onClick={() => setCurrentThreadId(thread.id)}
-                fullWidth
-                justify="flex-start"
-              >
-                {thread.name}
-              </Button>
-            ))}
+            {threads.length > 0 ? (
+              threads.map((thread) => (
+                <Button
+                  key={thread.id}
+                  variant={currentThreadId === thread.id ? "filled" : "subtle"}
+                  onClick={() => setCurrentThreadId(thread.id)}
+                  fullWidth
+                  justify="flex-start"
+                >
+                  {thread.name}
+                </Button>
+              ))
+            ) : (
+              <Text size="md" c="dimmed">
+                No threads
+              </Text>
+            )}
           </Stack>
         </Stack>
       </AppShell.Navbar>

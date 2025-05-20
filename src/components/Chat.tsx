@@ -7,7 +7,7 @@ import { useInitialChat } from "../hooks/useChat";
 import { showErrorNotification } from "../service/errors";
 
 interface ChatProps {
-  threadId: string;
+  threadId: string | null;
 }
 
 // Main component for one chat session

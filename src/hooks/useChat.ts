@@ -3,7 +3,7 @@ import { ArgoChatMessage } from "../service/types";
 import { getMessageHistory } from "../service/commands";
 
 // Query for initial message history per thread. To load once only when loading a new thread.
-export function useInitialChat(threadId: string) {
+export function useInitialChat(threadId: string | null) {
   return useQuery<ArgoChatMessage[]>({
     queryKey: ["messages", threadId],
     queryFn: () => getMessageHistory(threadId),
