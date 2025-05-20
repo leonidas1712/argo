@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Channel } from "@tauri-apps/api/core";
 import { 
   ChatStreamEvent, 
@@ -22,6 +22,8 @@ interface ChatMutationParams {
 
 // Mutation to request with chat history and get AI response
 export function useChatMutation() {
+  const queryClient = useQueryClient();
+  
   return useMutation({
     mutationFn: async ({ params, onChunk, onComplete }: ChatMutationParams) => {
       const onEvent = new Channel<ChatStreamEvent>();
@@ -51,6 +53,15 @@ export function useChatMutation() {
 
       await sendChatRequestStream(params, onEvent);
     },
+    onSuccess: async(data, variables) => {
+      if (variables.params.thread_id === null) {
+        console.log("Invalidating threads")
+        await queryClient.invalidateQueries({ queryKey: ['threads'] });
+      }
+    },
+    // onSuccess: ({ variables }) => {
+    //   queryClient.invalidateQueries({ queryKey: ['threads'] });
+    // },
     onError: (error: Error) => {
       showErrorNotification(error);
     },
