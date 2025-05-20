@@ -1,4 +1,5 @@
 pub mod chat;
+pub mod conversions;
 pub mod database;
 pub mod schema;
 
