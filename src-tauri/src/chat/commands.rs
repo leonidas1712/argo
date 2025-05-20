@@ -12,6 +12,7 @@ use tokio_stream::StreamExt;
 use crate::{
     db::{
         chat::{get_messages, get_threads, insert_new_thread},
+        conversions::{argo_message_to_row, row_to_argo_message, row_to_thread},
         insert_message, Database, MessageRow,
     },
     err::ArgoError,
@@ -61,12 +62,15 @@ pub async fn chat_request_stream(
 
     let prompt = String::from("Your name is Argo. Respond concisely to the user's requests.");
 
-    if let Some(id) = input.thread_id {
-        dbg!("got an id: {}", id);
+    // Thread id is either the one passed in, or if DNE, we make a new thread and use that id
+    let thread_id = if let Some(id) = input.thread_id {
+        dbg!("got an id: {}", &id);
+        id
     } else {
         dbg!("thread id was None");
         let new_thread = insert_new_thread(&db.pool, String::from("Test thread")).await?;
-    }
+        new_thread.id
+    };
 
     let mut history: Vec<ChatMessage> = vec![ChatMessage::system(prompt)];
     history.extend(
@@ -100,7 +104,8 @@ pub async fn chat_request_stream(
 
     // Construct user message
     let user_msg = input.last_message;
-    let user_msg_row: MessageRow = user_msg.into();
+    // let user_msg_row: MessageRow = user_msg.into();
+    let user_msg_row: MessageRow = argo_message_to_row(user_msg, &thread_id)?;
 
     // Construct assistant message
     let assistant_chat_msg = ChatMessage::new(MessageRole::Assistant, assistant_response);
@@ -108,7 +113,8 @@ pub async fn chat_request_stream(
         message: assistant_chat_msg,
         timestamp: Utc::now(),
     };
-    let assistant_msg_row: MessageRow = assistant_msg.into();
+    // let assistant_msg_row: MessageRow = assistant_msg.into();
+    let assistant_msg_row: MessageRow = argo_message_to_row(assistant_msg, &thread_id)?;
 
     // Save both msgs in one txn - so its atomic
     let mut tx = db.pool.begin().await?;
@@ -128,7 +134,14 @@ pub async fn get_message_history(
     dbg!("thread_id: {}", &thread_id);
 
     let messages = get_messages(&db.pool, thread_id).await?;
-    let messages: Vec<ArgoChatMessage> = messages.into_iter().map(|m| m.into()).collect();
+
+    // Turn Vec<Result<T,E>> => Result<Vec<T>, E>> automatically through collect
+    // i.e if any of them are errors the wrapping result is err
+    // https://stackoverflow.com/questions/63798662/how-do-i-convert-a-vecresultt-e-to-resultvect-e
+    let messages: Vec<ArgoChatMessage> = messages
+        .into_iter()
+        .map(row_to_argo_message)
+        .collect::<Result<Vec<_>, _>>()?;
 
     dbg!("msgs argo: {:?}", &messages);
 
@@ -139,6 +152,12 @@ pub async fn get_message_history(
 #[tauri::command]
 pub async fn get_thread_list(db: State<'_, Database>) -> Result<Vec<Thread>, ArgoError> {
     let thread_rows = get_threads(&db.pool).await?;
-    let threads: Vec<Thread> = thread_rows.into_iter().map(|t| t.into()).collect();
+
+    // Another way to handle Vec of results, easier to understand
+    let threads: Result<Vec<Thread>, ArgoError> =
+        thread_rows.into_iter().map(row_to_thread).collect();
+
+    let threads = threads?;
+
     Ok(threads)
 }

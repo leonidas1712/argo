@@ -1,3 +1,5 @@
+// Fallible functions to convert to and from DB layer and logic layer
+
 use crate::chat::types::{ArgoChatMessage, Thread};
 use crate::db::schema::{MessageRow, ThreadRow};
 use crate::err::ArgoError;
@@ -6,17 +8,14 @@ use ollama_rs::generation::chat::{ChatMessage, MessageRole};
 use uuid::Uuid;
 
 /// Convert an ArgoChatMessage to a MessageRow
-pub fn argo_message_to_row(
-    msg: ArgoChatMessage,
-    thread_id: String,
-) -> Result<MessageRow, ArgoError> {
+pub fn argo_message_to_row(msg: ArgoChatMessage, thread_id: &str) -> Result<MessageRow, ArgoError> {
     let id = Uuid::new_v4().to_string();
     let role = serde_json::to_string(&msg.message.role)
         .map_err(|e| ArgoError::ChatError(format!("failed to serialize message role: {}", e)))?;
 
     Ok(MessageRow {
         id,
-        thread_id,
+        thread_id: String::from(thread_id),
         role,
         content: msg.message.content,
         timestamp: msg.timestamp.to_rfc3339(),
