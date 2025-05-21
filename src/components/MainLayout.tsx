@@ -11,6 +11,7 @@ import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import AppHeader from "./AppHeader";
 import { useCurrentThread } from "../contexts/ThreadContext";
 import { Thread } from "../service/types";
+import ThreadList from "./ThreadList";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -50,20 +51,11 @@ export default function MainLayout({ children, threads }: MainLayoutProps) {
 
       <AppShell.Navbar p="md">
         <Stack>
-          <Stack gap="xs">
-            {threads.length > 0 &&
-              threads.map((thread) => (
-                <Button
-                  key={thread.id}
-                  variant={currentThreadId === thread.id ? "filled" : "subtle"}
-                  onClick={() => setCurrentThreadId(thread.id)}
-                  fullWidth
-                  justify="flex-start"
-                >
-                  {thread.name}
-                </Button>
-              ))}
-          </Stack>
+          <ThreadList
+            threads={threads}
+            currentThreadId={currentThreadId}
+            setCurrentThreadId={setCurrentThreadId}
+          />
         </Stack>
       </AppShell.Navbar>
 
