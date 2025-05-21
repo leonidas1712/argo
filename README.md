@@ -83,7 +83,7 @@ It's a thoughtful tool designed to help you explore ideas, reflect, and create �
 
 ## 🧑‍💻 Contributing
 
-Contributions are welcome! See the [roadmap](#-roadmap) or open an issue to suggest features or improvements.
+Contributions are welcome! See the roadmap or open an issue to suggest features or improvements.
 
 ---
 
