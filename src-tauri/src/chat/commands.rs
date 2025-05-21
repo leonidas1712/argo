@@ -10,6 +10,7 @@ use tauri::State;
 use tokio_stream::StreamExt;
 
 use crate::{
+    chat::prompt,
     db::{
         chat::{get_messages, get_threads, insert_new_thread},
         conversions::{argo_message_to_row, row_to_argo_message, row_to_thread},
@@ -60,7 +61,8 @@ pub async fn chat_request_stream(
     let ollama = Ollama::default();
     let model = String::from(input.model);
 
-    let prompt = String::from("Your name is Argo. Respond concisely to the user's requests.");
+    // let prompt = String::from("Your name is Argo. Respond concisely to the user's requests.");
+    let prompt = String::from(prompt::DEFAULT_SYSTEM_PROMPT);
 
     // Thread id is either the one passed in, or if DNE, we make a new thread and use that id
     let thread_id = if let Some(id) = input.thread_id {
