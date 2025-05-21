@@ -16,33 +16,31 @@ function ThreadList({
   const { colorScheme } = useMantineColorScheme();
   const padding = 8;
   return (
-    <Stack>
-      {threads.map((thread) =>
-        thread.id === currentThreadId ? (
+    <Stack gap="xs">
+      {threads.map((thread) => {
+        const isSelected = thread.id === currentThreadId;
+        return (
           <Box
             key={thread.id}
             p={padding}
             style={{
-              borderRadius: 10,
-              background: colorScheme === "dark" ? "#333" : "#f1f3f5",
+              borderRadius: 12,
+              background: isSelected
+                ? colorScheme === "dark"
+                  ? "#333"
+                  : "#f1f3f5"
+                : "transparent",
               cursor: "pointer",
+              transition: "background 0.15s",
             }}
             onClick={() => setCurrentThreadId(thread.id)}
           >
-            <Text size="sm">{thread.name}</Text>
+            <Text size="sm" fw={500}>
+              {thread.name}
+            </Text>
           </Box>
-        ) : (
-          <Text
-            key={thread.id}
-            size="sm"
-            pl={padding}
-            style={{ cursor: "pointer" }}
-            onClick={() => setCurrentThreadId(thread.id)}
-          >
-            {thread.name}
-          </Text>
-        )
-      )}
+        );
+      })}
     </Stack>
   );
 }
