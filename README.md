@@ -52,7 +52,7 @@ This project assumes [Ollama](https://ollama.com/) is installed and running loca
 | --------- | -------------------------------------------------------------------- |
 | Frontend  | React + TypeScript + Mantine + TanStack Query (inside a Tauri shell) |
 | Backend   | Rust + Tauri commands +`sqlx`for async SQLite                      |
-| Model API | [Ollama](https://ollama.com/)— local LLMs like LLaMA3, Qwen, etc.      |
+| Model API | [Ollama](https://ollama.com/) — local LLMs like LLaMA3, Qwen, etc.      |
 | Storage   | SQLite — for threads, messages, and (soon) vector embeddings        |
 
 ---
