@@ -75,6 +75,8 @@ Argon is designed to be:
 
 It’s a thoughtful tool designed to help you explore ideas, reflect, and create — entirely on your own terms.
 
+---
+
 ## 🧑‍💻 Contributing
 
 Contributions are welcome! See the [roadmap](#-roadmap) or open an issue to suggest features or improvements.
