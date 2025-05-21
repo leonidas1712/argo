@@ -10,7 +10,7 @@ This project assumes [Ollama](https://ollama.com/) is installed and running loca
 
 ![Argo chat screen](docs/chat_example.png "Argo Chat")
 
-![Argo extra screen](path/to/your_image.png "Argo Extra Screen")
+![Argo light mode](docs/light_mode.png "Light mode")
 
 ---
 
