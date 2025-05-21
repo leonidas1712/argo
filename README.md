@@ -1,6 +1,6 @@
 # 🧠 Argo: Chat with local LLMs on Ollama
 
-**Argo** is a local-first, AI-powered desktop app for threaded conversations with your own local LLMs via [Ollama](https://ollama.com/). Built with **Tauri,** **Rust, React** , and  **SQLite** , Argo runs entirely offline — prioritizing speed, privacy, and control.
+**Argo** is a local-first, minimalistic desktop client for threaded conversations with your own local LLMs via [Ollama](https://ollama.com/). Built with **Tauri,** **Rust, React,** and **SQLite**, Argo runs entirely offline — prioritizing speed, privacy, and control.
 
 This project assumes [Ollama](https://ollama.com/) is installed and running locally with at least one model available (e.g., LLaMA3, Qwen).
 
@@ -9,6 +9,8 @@ This project assumes [Ollama](https://ollama.com/) is installed and running loca
 ![Argo main screen](docs/new_thread.png "Argo New Thread")
 
 ![Argo chat screen](docs/chat_example.png "Argo Chat")
+
+![Argo extra screen](path/to/your_image.png "Argo Extra Screen")
 
 ---
 
