@@ -60,12 +60,12 @@ This project assumes [Ollama](https://ollama.com/) is installed and running loca
 ## 🔜 Roadmap
 
 > What's next? These features are planned or in-progress:
-
+* [ ] **Downloadable app releases** (installers per OS)
 * [ ] **Chat with uploaded `.txt` and `.md` files**
 * [ ] **RAG (Retrieval-Augmented Generation)** on uploaded content
 * [ ] **Settings sidebar** to tune model parameters (temperature, top_p, etc.)
 * [ ] **MCP integration** for tool calls using the Model Context Protocol
-* [ ] **Proper downloadable app release** (auto-installers per OS)
+
 
 ---
 
