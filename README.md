@@ -4,6 +4,10 @@
 
 This project assumes [Ollama](https://ollama.com/) is installed and running locally with at least one model available (e.g., LLaMA3, Qwen).
 
+## 🎥 Demo
+
+https://github.com/leonidas1712/argo/argo_demo_720.mov
+
 ---
 
 ## ✨ Features
@@ -72,7 +76,7 @@ Argo is designed to be:
 * **Private** — everything runs locally; your data never leaves your machine
 * **Transparent** — SQLite, open APIs, no tracking, no mystery boxes
 
-It’s a thoughtful tool designed to help you explore ideas, reflect, and create — entirely on your own terms.
+It's a thoughtful tool designed to help you explore ideas, reflect, and create — entirely on your own terms.
 
 ---
 
