@@ -4,9 +4,11 @@
 
 This project assumes [Ollama](https://ollama.com/) is installed and running locally with at least one model available (e.g., LLaMA3, Qwen).
 
-## 🎥 Demo
+## 🎥 Preview
 
-https://github.com/leonidas1712/argo/argo_demo_720.mov
+![Argo main screen](docs/new_thread.png "Argo New Thread")
+
+![Argo chat screen](docs/chat_example.png "Argo Chat")
 
 ---
 
