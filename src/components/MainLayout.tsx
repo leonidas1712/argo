@@ -2,9 +2,7 @@ import {
   Container,
   Stack,
   AppShell,
-  Text,
   useMantineColorScheme,
-  Button,
   ScrollArea,
 } from "@mantine/core";
 import { ReactNode } from "react";
