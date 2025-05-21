@@ -10,10 +10,6 @@ This project assumes [Ollama](https://ollama.com/) is installed and running loca
 
 ![Argo chat screen](docs/chat_example.png "Argo Chat")
 
-![Argo light mode](docs/light_mode.png "Light mode")
-
----
-
 ## ✨ Features
 
 * ⚡ **Streaming responses** from any Ollama-supported local model
