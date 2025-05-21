@@ -5,6 +5,7 @@ import {
   Text,
   useMantineColorScheme,
   Button,
+  ScrollArea,
 } from "@mantine/core";
 import { ReactNode } from "react";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
@@ -51,11 +52,13 @@ export default function MainLayout({ children, threads }: MainLayoutProps) {
 
       <AppShell.Navbar p="md">
         <Stack>
-          <ThreadList
-            threads={threads}
-            currentThreadId={currentThreadId}
-            setCurrentThreadId={setCurrentThreadId}
-          />
+          <ScrollArea style={{ maxHeight: "80vh" }} scrollbarSize={6}>
+            <ThreadList
+              threads={threads}
+              currentThreadId={currentThreadId}
+              setCurrentThreadId={setCurrentThreadId}
+            />
+          </ScrollArea>
         </Stack>
       </AppShell.Navbar>
 
