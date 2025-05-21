@@ -68,7 +68,16 @@ pub async fn chat_request_stream(
         id
     } else {
         dbg!("thread id was None");
-        let new_thread = insert_new_thread(&db.pool, String::from("New Thread")).await?;
+        // Use user's message for thread name
+        let thread_name: String = input
+            .last_message
+            .message
+            .content
+            .trim()
+            .chars()
+            .take(100)
+            .collect();
+        let new_thread = insert_new_thread(&db.pool, thread_name).await?;
         new_thread.id
     };
 

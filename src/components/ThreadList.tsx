@@ -35,7 +35,7 @@ function ThreadList({
             }}
             onClick={() => setCurrentThreadId(thread.id)}
           >
-            <Text size="sm" fw={500}>
+            <Text size="sm" fw={500} truncate="end">
               {thread.name}
             </Text>
           </Box>
