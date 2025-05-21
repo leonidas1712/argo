@@ -5,6 +5,7 @@ import {
   IconPencilPlus,
 } from "@tabler/icons-react";
 import ColorSchemeToggle from "./ColorSchemeToggle";
+import { useCurrentThread } from "../contexts/ThreadContext";
 
 function AppHeader({
   sidebarOpened,
@@ -15,6 +16,7 @@ function AppHeader({
   toggleSidebar: () => void;
   sidebarIconColor: string;
 }) {
+  const { setCurrentThreadId } = useCurrentThread();
   const toolTipLabel = sidebarOpened
     ? "Hide chat threads"
     : "Show chat threads";
@@ -45,6 +47,7 @@ function AppHeader({
             aria-label="New thread"
             variant="subtle"
             color={sidebarIconColor}
+            onClick={() => setCurrentThreadId(null)}
           >
             <IconPencilPlus size={20} color={sidebarIconColor} />
           </ActionIcon>
