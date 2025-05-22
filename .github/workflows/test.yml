@@ -20,4 +20,5 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Run tests
+        working-directory: src-tauri
         run: cargo test --all
