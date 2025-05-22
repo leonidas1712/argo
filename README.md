@@ -74,7 +74,7 @@ https://github.com/user-attachments/assets/9f69c8f3-0f1b-464b-addf-f85a74ff6b75
 ## 🔜 Roadmap
 
 > What's next? These features are planned or in-progress:
-* [ ] **Downloadable app releases** (installers per OS)
+* [x] **Downloadable app releases** (installers per OS)
 * [ ] **Chat with uploaded `.txt` and `.md` files**
 * [ ] **RAG (Retrieval-Augmented Generation)** on uploaded content
 * [ ] **Settings sidebar** to tune model parameters (temperature, top_p, etc.)
