@@ -46,3 +46,40 @@ impl serde::Serialize for ArgoError {
         err_kind.serialize(serializer)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ollama_rs::error::OllamaError;
+    use sqlx::Error as SqlxError;
+
+    #[test]
+    fn test_argo_error_from_ollama_error() {
+        let ollama_error = OllamaError::Other("test error".to_string());
+        let argo_error: ArgoError = ollama_error.into();
+
+        match argo_error {
+            ArgoError::ChatError(msg) => assert!(msg.contains("test error")),
+            _ => panic!("Expected ChatError variant"),
+        }
+    }
+
+    #[test]
+    fn test_argo_error_from_sqlx_error() {
+        let sqlx_error = SqlxError::PoolClosed;
+        let argo_error: ArgoError = sqlx_error.into();
+
+        match argo_error {
+            ArgoError::DatabaseError(_) => (),
+            _ => panic!("Expected DatabaseError variant"),
+        }
+    }
+
+    #[test]
+    fn test_argo_error_serialization() {
+        let error = ArgoError::ChatError("test error".to_string());
+        let serialized = serde_json::to_string(&error).unwrap();
+        assert!(serialized.contains("chatError"));
+        assert!(serialized.contains("test error"));
+    }
+}
