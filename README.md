@@ -4,15 +4,11 @@
 
 This project assumes [Ollama](https://ollama.com/) is installed and running locally with at least one model available (e.g., LLaMA3, Qwen).
 
-## 🎥 Preview
+## 🎥 Demo
 
 
 https://github.com/user-attachments/assets/9f69c8f3-0f1b-464b-addf-f85a74ff6b75
 
-
-![Argo main screen](docs/new_thread.png "Argo New Thread")
-
-![Argo chat screen](docs/chat_example.png "Argo Chat")
 
 ## ✨ Features
 
@@ -84,6 +80,16 @@ Argo is designed to be:
 It's a thoughtful tool designed to help you explore ideas, reflect, and create — entirely on your own terms.
 
 ---
+
+## 📸 Screenshots
+
+
+![Argo main screen](docs/new_thread.png "Argo New Thread")
+
+![Argo chat screen](docs/chat_example.png "Argo Chat")
+
+![Argo light mode](docs/light_mode.png "Light mode")
+
 
 ## 🧑‍💻 Contributing
 
