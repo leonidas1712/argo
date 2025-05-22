@@ -23,6 +23,22 @@ https://github.com/user-attachments/assets/9f69c8f3-0f1b-464b-addf-f85a74ff6b75
 
 ## 📦 Getting Started
 
+### 🔽 Installing a Prebuilt Release
+
+1. Download the latest release for your OS from the [Releases page](https://github.com/leonidas1712/argo/releases).
+2. Unzip or install the app as appropriate:
+   - `.dmg` for macOS (Intel recommended)
+   - `.exe` or `.msi` for Windows
+   - `.AppImage`, `.deb`, or `.rpm` for Linux
+3. Ensure [Ollama](https://ollama.com/) is installed and running locally with at least one model (e.g., `llama3`, `qwen`).
+4. Launch the Argo app — you're ready to chat.
+
+> ⚠️ macOS Apple Silicon builds (`aarch64`) may currently be flagged as "damaged" due to lack of code signing. Use the Intel build (`x64`) if needed.
+
+---
+
+### 🛠 Installing from Source
+
 1. Install [Ollama](https://ollama.com/) and ensure it's running locally.
 2. Install [Tauri dependencies](https://tauri.app/start/prerequisites/).
 3. Clone this repo and install JavaScript dependencies:
@@ -41,8 +57,6 @@ https://github.com/user-attachments/assets/9f69c8f3-0f1b-464b-addf-f85a74ff6b75
    pnpm tauri build
    ```
 6. Follow Tauri's OS-specific setup instructions to install the built app.
-
-> ⚠️ A proper downloadable app release is coming soon.
 
 ---
 
