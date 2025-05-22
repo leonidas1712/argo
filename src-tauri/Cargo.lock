@@ -82,6 +82,7 @@ dependencies = [
  "tauri-build",
  "tauri-plugin-opener",
  "thiserror 2.0.12",
+ "tokio",
  "tokio-stream",
  "uuid",
 ]

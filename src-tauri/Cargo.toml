@@ -39,3 +39,6 @@ sqlx = { version = "0.8.5", features = ["sqlite", "chrono", "macros", "runtime-t
 anyhow = "1.0.98"
 uuid = { version = "1.16.0", features = ["v4"] }
 
+[dev-dependencies]
+tokio = { version = "1.36", features = ["full"] }
+
