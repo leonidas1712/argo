@@ -6,6 +6,10 @@ This project assumes [Ollama](https://ollama.com/) is installed and running loca
 
 ## 🎥 Preview
 
+
+https://github.com/user-attachments/assets/9f69c8f3-0f1b-464b-addf-f85a74ff6b75
+
+
 ![Argo main screen](docs/new_thread.png "Argo New Thread")
 
 ![Argo chat screen](docs/chat_example.png "Argo Chat")
