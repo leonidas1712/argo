@@ -21,35 +21,35 @@ use crate::{
 
 use super::types::{ArgoChatMessage, ChatRequest, ChatStreamEvent, Thread};
 
-/// Chat request without streaming
-#[tauri::command]
-pub async fn chat_request(input: ChatRequest) -> Result<ArgoChatMessage, ArgoError> {
-    let mut ollama = Ollama::default();
-    let model = String::from(input.model);
-    let prompt = String::from("Your name is Argo. Respond concisely to the user's requests.");
+// /// Chat request without streaming
+// #[tauri::command]
+// pub async fn chat_request(input: ChatRequest) -> Result<ArgoChatMessage, ArgoError> {
+//     let mut ollama = Ollama::default();
+//     let model = String::from(input.model);
+//     let prompt = String::from("Your name is Argo. Respond concisely to the user's requests.");
 
-    let mut history: Vec<ChatMessage> = vec![ChatMessage::system(prompt)];
-    history.extend(
-        input
-            .history
-            .iter()
-            .map(|argo_msg| argo_msg.message.clone()),
-    );
+//     let mut history: Vec<ChatMessage> = vec![ChatMessage::system(prompt)];
+//     history.extend(
+//         input
+//             .history
+//             .iter()
+//             .map(|argo_msg| argo_msg.message.clone()),
+//     );
 
-    let res = ollama
-        .send_chat_messages_with_history(
-            &mut history,
-            ChatMessageRequest::new(model, vec![input.last_message.message]),
-        )
-        .await?;
+//     let res = ollama
+//         .send_chat_messages_with_history(
+//             &mut history,
+//             ChatMessageRequest::new(model, vec![input.last_message.message]),
+//         )
+//         .await?;
 
-    let argo_msg = ArgoChatMessage {
-        message: res.message,
-        timestamp: Utc::now(),
-    };
+//     let argo_msg = ArgoChatMessage {
+//         message: res.message,
+//         timestamp: Utc::now(),
+//     };
 
-    Ok(argo_msg)
-}
+//     Ok(argo_msg)
+// }
 
 /// Chat request with streaming. Returns thread id: either new if no thread existed for this request or the same one
 #[tauri::command]
