@@ -41,8 +41,8 @@ pub fn row_to_argo_message(row: MessageRow) -> Result<ArgoChatMessage, ArgoError
 pub fn row_to_thread(row: ThreadRow) -> Result<Thread, ArgoError> {
     let created_at = DateTime::parse_from_rfc3339(&row.created_at)
         .or_else(|_| {
-            // Try parsing as simple datetime format
-            DateTime::parse_from_str(&row.created_at, "%Y-%m-%d %H:%M:%S")
+            // Try parsing as simple datetime format with timezone
+            DateTime::parse_from_str(&row.created_at, "%Y-%m-%d %H:%M:%S %z")
         })
         .map_err(|e| ArgoError::ChatError(format!("failed to parse timestamp: {}", e)))?
         .with_timezone(&Utc);
@@ -52,4 +52,87 @@ pub fn row_to_thread(row: ThreadRow) -> Result<Thread, ArgoError> {
         name: row.name,
         created_at,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use chrono::Utc;
+
+    #[test]
+    fn test_argo_message_to_row() {
+        let msg = ArgoChatMessage {
+            message: ChatMessage::new(MessageRole::User, "test message".to_string()),
+            timestamp: Utc::now(),
+        };
+        let thread_id = "test-thread";
+
+        let row = argo_message_to_row(msg, thread_id).unwrap();
+
+        assert_eq!(row.thread_id, thread_id);
+        assert_eq!(row.content, "test message");
+        assert!(row.id.len() > 0); // UUID should be non-empty
+        assert!(row.role.contains("user")); // Role should be serialized as lowercase
+    }
+
+    #[test]
+    fn test_row_to_argo_message_assistant() {
+        let row = MessageRow {
+            id: "test-id".to_string(),
+            thread_id: "test-thread".to_string(),
+            role: r#""assistant""#.to_string(), // Just the role string, not a JSON object
+            content: "test response".to_string(),
+            timestamp: Utc::now().to_rfc3339(),
+        };
+
+        let msg = row_to_argo_message(row).unwrap();
+
+        assert_eq!(msg.message.content, "test response");
+        assert_eq!(msg.message.role, MessageRole::Assistant);
+    }
+
+    #[test]
+    fn test_row_to_argo_message_user() {
+        let row = MessageRow {
+            id: "test-id".to_string(),
+            thread_id: "test-thread".to_string(),
+            role: r#""user""#.to_string(),
+            content: "test question".to_string(),
+            timestamp: Utc::now().to_rfc3339(),
+        };
+
+        let msg = row_to_argo_message(row).unwrap();
+
+        assert_eq!(msg.message.content, "test question");
+        assert_eq!(msg.message.role, MessageRole::User);
+    }
+
+    #[test]
+    fn test_row_to_thread() {
+        let row = ThreadRow {
+            id: "test-thread".to_string(),
+            name: "Test Thread".to_string(),
+            created_at: Utc::now().to_rfc3339(),
+        };
+
+        let thread = row_to_thread(row).unwrap();
+
+        assert_eq!(thread.id, "test-thread");
+        assert_eq!(thread.name, "Test Thread");
+        assert!(thread.created_at <= Utc::now());
+    }
+
+    #[test]
+    fn test_row_to_thread_legacy_format() {
+        let row = ThreadRow {
+            id: "test-thread".to_string(),
+            name: "Test Thread".to_string(),
+            created_at: "2024-03-20 15:30:00 +0000".to_string(), // Legacy format with timezone offset
+        };
+
+        let thread = row_to_thread(row).unwrap();
+
+        assert_eq!(thread.id, "test-thread");
+        assert_eq!(thread.name, "Test Thread");
+    }
 }
