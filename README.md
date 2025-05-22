@@ -50,7 +50,7 @@ https://github.com/user-attachments/assets/9f69c8f3-0f1b-464b-addf-f85a74ff6b75
 
 | Layer     | Stack                                                                |
 | --------- | -------------------------------------------------------------------- |
-| Frontend  | React + TypeScript + Mantine + TanStack Query (inside a Tauri shell) |
+| Frontend  | React + TypeScript + Mantine + TanStack Query (inside Tauri) |
 | Backend   | Rust + Tauri commands +`sqlx`for async SQLite                      |
 | Model API | [Ollama](https://ollama.com/) — local LLMs like LLaMA3, Qwen, etc.      |
 | Storage   | SQLite — for threads, messages, and (soon) vector embeddings        |
